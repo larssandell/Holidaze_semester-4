@@ -1,7 +1,7 @@
 {
     "name": "holidaze-semester-4",
     "private": true,
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -44,5 +44,4 @@
         "vite": "^4.2.0",
         "vitest": "^0.30.1"
     }
- 
 }
