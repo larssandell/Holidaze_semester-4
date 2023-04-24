@@ -1,22 +1,22 @@
 import { createTheme } from '@mui/material';
 
-export const theme = createTheme({
+const myTheme = createTheme({
     palette: {
-        primary: {
-            mainbg: '#FFFDFA',
+        background: {
+            default: '#FFFDFA',
         },
-        secondary: {
-            darkblue: '#023059',
-            midblue: '#5D7CA6',
-            lightblue: '73A2BF',
+        blues: {
+            dark: '#023059',
+            light: '#73A2BF',
+            medium: '#5D7CA6',
         },
-        otherColor: {
-            red: '#A52A2A',
+        colors: {
+            black: '#000',
             green: '#228B22',
+            red: '#A52A2A',
             gray: '#D9D9D9',
         },
     },
-    customizeToolbar: {
-        minHeight: 100,
-    },
 });
+
+export default myTheme;

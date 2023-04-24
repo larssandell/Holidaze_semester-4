@@ -1,5 +1,4 @@
-import * as React from 'react';
-// import { useState, MouseEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
     AppBar,
@@ -9,14 +8,18 @@ import {
     Divider,
     IconButton,
     // InputBase,
-    Menu,
+    // Menu,
+    Drawer,
     MenuItem,
     styled,
     Toolbar,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import { ChevronRight, MenuRounded } from '@mui/icons-material';
 import logo from '../../../assets/logo/holidazelogo.png';
 import './Header.css';
+// import { theme } from '../theme';
 
 const StyledAppBar = styled(AppBar)({
     alignItems: 'center',
@@ -68,14 +71,21 @@ const StyledDivider = styled(Divider)({
 // }));
 
 function Header() {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [open, setOpen] = useState(false);
+    const theme = useTheme();
+    const medium = useMediaQuery(theme.breakpoints.up('md'));
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
+    useEffect(() => {
+        if (medium) {
+            setOpen(false);
+        }
+    }, [medium]);
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
+    const toggleMenuDrawer = (e) => {
+        if (e.type === 'keydown' && (e.key === 'tab' || e.key === 'shift')) {
+            return;
+        }
+        setOpen(!open);
     };
 
     return (
@@ -103,7 +113,7 @@ function Header() {
                         {pages.map((page) => (
                             <MenuItem
                                 key={page.name}
-                                onClick={handleCloseNavMenu}
+                                onClick={toggleMenuDrawer}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 <NavLink to={page.url}>{page.name}</NavLink>
@@ -120,7 +130,7 @@ function Header() {
                             aria-label='hamburger icon'
                             aria-controls='hamburger'
                             aria-haspopup='true'
-                            onClick={handleOpenNavMenu}
+                            onClick={toggleMenuDrawer}
                             color='inherit'
                             sx={{
                                 display: { xs: 'flex', md: 'none' },
@@ -144,25 +154,13 @@ function Header() {
                                 ></Avatar>
                             </NavLink>
                         </IconButton>
-                        <Menu
-                            id='hamburger'
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
+                        <Drawer
+                            // variant={medium ? 'temporary' : 'permanent'}
+                            anchor='right'
+                            open={open}
+                            onClose={toggleMenuDrawer}
                         >
-                            <div onClick={handleCloseNavMenu} role='button'>
+                            <div onClick={toggleMenuDrawer} role='button'>
                                 <IconButton>
                                     <ChevronRight tabIndex={0} />
                                 </IconButton>
@@ -189,7 +187,7 @@ function Header() {
                             {pages.map((page) => (
                                 <MenuItem
                                     key={page.name}
-                                    onClick={handleCloseNavMenu}
+                                    onClick={toggleMenuDrawer}
                                     sx={{
                                         my: 2,
                                         color: 'white',
@@ -199,7 +197,7 @@ function Header() {
                                     <NavLink to={page.url}>{page.name}</NavLink>
                                 </MenuItem>
                             ))}
-                        </Menu>
+                        </Drawer>
                     </StyledDiv>
                 </StyledToolbar>
             </Container>
@@ -208,28 +206,3 @@ function Header() {
 }
 
 export default Header;
-
-{
-    /* <StyledDiv>
-                        <IconButton onClick={() => setNavOpen(true)}>
-                            <Avatar
-                                sx={{
-                                    backgroundColor: 'transparent',
-                                    width: 30,
-                                    height: 30,
-                                }}
-                            ></Avatar>
-                        </IconButton>
-                        <IconButton onClick={() => setNavOpen(true)}>
-                            <Avatar
-                                sx={{
-                                    backgroundColor: 'transparent',
-                                    width: 30,
-                                    height: 30,
-                                }}
-                            >
-                                <MenuRounded fontSize='large' />
-                            </Avatar>
-                        </IconButton>
-                    </StyledDiv> */
-}
