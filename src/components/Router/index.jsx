@@ -10,11 +10,9 @@ import Error from '../../pages/Error';
 import PrivateRoute from '../utilits/PrivateRoute';
 import LoginPage from '../../pages/LoginPage';
 import RegisterPage from '../../pages/RegisterPage';
-// import { AuthProvider } from '../utilits/Auth';
 
 function Router() {
     return (
-        // <AuthProvider>
         <Routes>
             <Route path='/' element={<Layout />}>
                 <Route index element={<Home />} />
@@ -32,7 +30,6 @@ function Router() {
                 <Route path='*' element={<Error />} />
             </Route>
         </Routes>
-        // </AuthProvider>
     );
 }
 
