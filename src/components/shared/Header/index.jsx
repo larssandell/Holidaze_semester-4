@@ -7,8 +7,6 @@ import {
     Container,
     Divider,
     IconButton,
-    // InputBase,
-    // Menu,
     Drawer,
     MenuItem,
     styled,
@@ -18,7 +16,7 @@ import {
 } from '@mui/material';
 import { ChevronRight, MenuRounded } from '@mui/icons-material';
 import logo from '../../../assets/logo/holidazelogo.png';
-import './Header.css';
+
 // import { theme } from '../theme';
 
 const StyledAppBar = styled(AppBar)({
@@ -36,15 +34,27 @@ const StyledToolbar = styled(Toolbar)({
 const StyledDiv = styled('div')({
     display: 'flex',
     flexDirection: 'row-reverse',
-    // alignItems: 'center',
 });
 
-// const Search = styled('div')(({ theme }) => ({
-//     backgroundColor: 'white',
-//     padding: '0 10px',
-//     borderRadius: theme.shape.borderRadius,
-//     width: '40%',
-// }));
+// const navInfo = {
+//     manager: [
+//         { name: 'Home', url: '/' },
+//         { name: 'Venues', url: '/venues' },
+//         { name: 'Profile', url: '/profile' },
+//         { name: 'Create Venue', url: '/create' },
+//         { name: 'logout', url: '/create' },
+//     ],
+//     registered: [
+//         { name: 'Home', url: '/' },
+//         { name: 'Venues', url: '/venues' },
+//         { name: 'Logout', url: '/profile' },
+//     ],
+//     user: [
+//         { name: 'Home', url: '/' },
+//         { name: 'Venues', url: '/venues' },
+//         { name: 'Register', url: '/profile' },
+//     ],
+// };
 
 const pages = [
     { name: 'Home', url: '/' },
@@ -155,48 +165,60 @@ function Header() {
                             </NavLink>
                         </IconButton>
                         <Drawer
-                            // variant={medium ? 'temporary' : 'permanent'}
+                            PaperProps={{
+                                sx: {
+                                    width: '50%',
+                                    color: 'black',
+                                },
+                            }}
                             anchor='right'
                             open={open}
                             onClose={toggleMenuDrawer}
                         >
-                            <div onClick={toggleMenuDrawer} role='button'>
-                                <IconButton>
-                                    <ChevronRight tabIndex={0} />
-                                </IconButton>
-                            </div>
-                            <StyledDivider />
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <IconButton>
-                                    <NavLink to='/profile'>
-                                        <Avatar
+                            <Box>
+                                <div onClick={toggleMenuDrawer} role='button'>
+                                    <IconButton>
+                                        <ChevronRight
                                             sx={{
-                                                backgroundColor: 'black',
-                                                fontSize: 'large',
+                                                fontSize: 40,
                                             }}
-                                        ></Avatar>
-                                    </NavLink>
-                                </IconButton>
-                            </Box>
-                            <StyledDivider />
-                            {pages.map((page) => (
-                                <MenuItem
-                                    key={page.name}
-                                    onClick={toggleMenuDrawer}
+                                        />
+                                    </IconButton>
+                                </div>
+                                <StyledDivider />
+                                <Box
                                     sx={{
-                                        my: 2,
-                                        color: 'white',
-                                        display: 'block',
+                                        display: 'flex',
+                                        justifyContent: 'center',
                                     }}
                                 >
-                                    <NavLink to={page.url}>{page.name}</NavLink>
-                                </MenuItem>
-                            ))}
+                                    <IconButton sx={{ fontSize: 40 }}>
+                                        <NavLink to='/profile'>
+                                            <Avatar
+                                                sx={{
+                                                    backgroundColor: 'black',
+                                                }}
+                                            ></Avatar>
+                                        </NavLink>
+                                    </IconButton>
+                                </Box>
+                                <StyledDivider />
+                                {pages.map((page) => (
+                                    <MenuItem
+                                        key={page.name}
+                                        onClick={toggleMenuDrawer}
+                                        sx={{
+                                            my: 2,
+                                            color: 'white',
+                                            display: 'block',
+                                        }}
+                                    >
+                                        <NavLink to={page.url}>
+                                            {page.name}
+                                        </NavLink>
+                                    </MenuItem>
+                                ))}
+                            </Box>
                         </Drawer>
                     </StyledDiv>
                 </StyledToolbar>
