@@ -1,29 +1,21 @@
 import { FormControl, TextField } from '@mui/material';
 import { Controller } from 'react-hook-form';
-import FormErrorMessage from './ErrorMessage';
 
-const TextFields = ({ label, inputProps, control, name, errors }) => {
-    const addErrorIntoField = (errors) =>
-        errors ? { error: true } : { error: false };
+const TextFields = ({ label, control, name }) => {
     return (
         <FormControl fullWidth sx={{ mb: '1rem' }}>
             <Controller
-                name={name}
                 control={control}
+                name={name}
                 render={({ field }) => (
                     <TextField
                         {...field}
-                        {...addErrorIntoField(errors[name])}
                         required
                         label={label}
-                        variant='filled'
-                        InputProps={inputProps}
+                        variant='outlined'
                     />
                 )}
             />
-            {errors[name] ? (
-                <FormErrorMessage message={errors[name].message} />
-            ) : null}
         </FormControl>
     );
 };

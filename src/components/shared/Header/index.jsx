@@ -13,9 +13,17 @@ import {
     Toolbar,
     useMediaQuery,
     useTheme,
+    Modal,
+    Typography,
+    Button,
 } from '@mui/material';
 import { ChevronRight, MenuRounded } from '@mui/icons-material';
+// import Modals from '../../modals/modals';
 import logo from '../../../assets/logo/holidazelogo.png';
+import useStatus from '../../hooks/useStatus';
+import { styleModal } from '../../modals/modalstyle';
+import RegisterModal from '../../modals/RegisterModal';
+import LoginModal from '../../modals/LoginModal';
 
 // import { theme } from '../theme';
 
@@ -82,8 +90,16 @@ const StyledDivider = styled(Divider)({
 
 function Header() {
     const [open, setOpen] = useState(false);
+    const { status: regModal, toggleStatus: toggleRegModal } = useStatus(false);
+    const { status: loginModal, toggleStatus: toggleLoginModal } =
+        useStatus(false);
     const theme = useTheme();
     const medium = useMediaQuery(theme.breakpoints.up('md'));
+
+    // const switchSignup = (event) => {
+    //     setLoginOpen(false)
+    //     setSignupOpen(true)
+    //   }
 
     useEffect(() => {
         if (medium) {
@@ -123,7 +139,6 @@ function Header() {
                         {pages.map((page) => (
                             <MenuItem
                                 key={page.name}
-                                onClick={toggleMenuDrawer}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 <NavLink to={page.url}>{page.name}</NavLink>
@@ -154,8 +169,8 @@ function Header() {
                                 }}
                             />
                         </IconButton>
-                        <IconButton>
-                            <NavLink to='/profile'>
+                        <IconButton onClick={toggleLoginModal}>
+                            <NavLink>
                                 <Avatar
                                     sx={{
                                         backgroundColor: 'transparent',
@@ -223,6 +238,48 @@ function Header() {
                     </StyledDiv>
                 </StyledToolbar>
             </Container>
+            <Modal
+                title='register'
+                open={regModal}
+                onClose={toggleRegModal}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+            >
+                <Box sx={styleModal}>
+                    <Typography align='center' variant='h4'>
+                        Register
+                    </Typography>
+                    <RegisterModal />
+                    <Button
+                        onClick={toggleLoginModal}
+                        fullWidth
+                        variant='outlined'
+                    >
+                        Back to Login
+                    </Button>
+                </Box>
+            </Modal>
+            <Modal
+                title='Login'
+                open={loginModal}
+                onClose={toggleLoginModal}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+            >
+                <Box sx={styleModal}>
+                    <Typography align='center' variant='h4'>
+                        Login
+                    </Typography>
+                    <LoginModal />
+                    <Button
+                        onClick={toggleRegModal}
+                        fullWidth
+                        variant='outlined'
+                    >
+                        Register
+                    </Button>
+                </Box>
+            </Modal>
         </StyledAppBar>
     );
 }

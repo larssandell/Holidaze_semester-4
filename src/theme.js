@@ -16,6 +16,9 @@ const myTheme = createTheme({
             red: '#A52A2A',
             gray: '#D9D9D9',
         },
+        selectableLabel: {
+            userSelect: 'none',
+        },
     },
 });
 
