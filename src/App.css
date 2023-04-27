@@ -17,3 +17,6 @@ body {
 footer {
     background-color: red;
 }
+.userSelectNone {
+    user-select: none;
+}

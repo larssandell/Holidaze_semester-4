@@ -9,6 +9,7 @@ const SwitchFields = ({ name, control, label }) => {
                 control={control}
                 render={({ field }) => (
                     <FormControlLabel
+                        className='userSelectNone'
                         control={<Switch {...field} />}
                         label={label}
                     />
@@ -19,17 +20,3 @@ const SwitchFields = ({ name, control, label }) => {
 };
 
 export default SwitchFields;
-{
-    /* <>
-            <Controller
-                name={name}
-                control={control}
-                render={({ field }) => (
-                    <FormControlLabel
-                        control={<Switch {...field} />}
-                        label='Venue Manager'
-                    />
-                )}
-            />
-        </> */
-}
