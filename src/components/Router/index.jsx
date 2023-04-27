@@ -26,7 +26,7 @@ function Router() {
                 <Route path='/createVenue' element={<CreateVenues />} />
                 <Route path='/login' element={<LoginPage />} />
                 <Route path='/register' element={<RegisterPage />} />
-                <Route path='/Complete' element={<BookingComplete />} />
+                <Route path='/complete' element={<BookingComplete />} />
                 <Route path='*' element={<Error />} />
             </Route>
         </Routes>

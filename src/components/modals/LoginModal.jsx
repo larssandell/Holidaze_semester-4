@@ -1,14 +1,36 @@
 import { Box, Button } from '@mui/material';
 import TextFields from './form/TextFields';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup.object({
+    email: yup
+        .string()
+        .matches(
+            /^([a-zA-Z0-9_])+(@stud.noroff.no)/,
+            'must be a valid stud.noroff.no and only symbol accepted _'
+        )
+
+        .required(),
+    password: yup
+        .string({ minLength: 8 })
+        .required('The password value must be at least 8 characters.'),
+});
 
 function LoginModal() {
-    const { handleSubmit, control } = useForm({
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm({
         defaultValues: {
             email: '',
             password: '',
         },
+        resolver: yupResolver(schema),
     });
+    console.log(errors);
 
     const onSubmit = (data) => {
         console.log(data);
@@ -16,16 +38,23 @@ function LoginModal() {
 
     return (
         <Box
+            noValidate
             component='form'
             onSubmit={handleSubmit(onSubmit)}
             sx={{ width: '100%', mt: '2rem' }}
         >
-            <TextFields control={control} name='email' required label='Email' />
             <TextFields
                 control={control}
-                required
+                errors={errors}
+                name='email'
+                label='Email'
+            />
+            <TextFields
+                control={control}
+                errors={errors}
                 name='password'
                 label='Password'
+                type='password'
             />
             <Button
                 type='submit'
