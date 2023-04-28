@@ -2,7 +2,14 @@ import { Box, Button } from '@mui/material';
 import TextFields from './form/TextFields';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { toast } from 'react-toastify';
 import * as yup from 'yup';
+import { loginUrl } from '../hooks/useFetch/options/options';
+import { postReqBody } from '../hooks/useFetch/options/options';
+
+// import useFetch from '../hooks/useFetch';
+// import { Triangle } from 'react-loader-spinner';
+// import { useEffect, useState } from 'react';
 
 const schema = yup.object({
     email: yup
@@ -30,10 +37,21 @@ function LoginModal() {
         },
         resolver: yupResolver(schema),
     });
-    console.log(errors);
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = async (inputData) => {
+        // console.log('form data', inputData);
+
+        const loginUser = await postReqBody(loginUrl, inputData);
+
+        console.log('response + json', loginUser);
+        console.log(' only response', loginUser.response);
+        if (loginUser.response.ok === true) {
+            console.log(loginUser.response.ok);
+            sessionStorage.setItem('User', JSON.stringify(loginUser.json));
+            toast.success(`'${loginUser.json.name} login success'`);
+        } else {
+            console.log('feilet');
+        }
     };
 
     return (

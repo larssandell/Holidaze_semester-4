@@ -4,6 +4,9 @@ import SwitchFields from './form/SwitchFields';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { registerUrl } from '../hooks/useFetch/options/options';
+import { postReqBody } from '../hooks/useFetch/options/options';
+import { toast } from 'react-toastify';
 
 const schema = yup.object({
     name: yup
@@ -41,10 +44,18 @@ const RegisterModal = () => {
         },
         resolver: yupResolver(schema),
     });
-    console.log(errors);
+    // console.log(errors);
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = async (inputData) => {
+        const { confirmPassword, ...rest } = inputData;
+        const registerUser = await postReqBody(rest, registerUrl);
+        console.log(registerUser);
+
+        if (registerUser.json.ok === false) {
+            toast.error(`${registerUser.json.errors[0].message}`);
+        } else {
+            toast.success(`${registerUser.json.name} Created`);
+        }
     };
     return (
         <Box
