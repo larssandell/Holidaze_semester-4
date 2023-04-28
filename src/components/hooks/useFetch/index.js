@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function useFetch(url, method, headers, body) {
+function useFetch(url, method, headers, body, json) {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -14,9 +14,9 @@ function useFetch(url, method, headers, body) {
                     body: JSON.stringify(body),
                 });
                 // console.log(getResponse);
-                const getData = await getResponse.json();
+                const json = await getResponse.json();
                 // console.log(getData);
-                setData(getData);
+                setData(json);
                 setIsLoading(false);
             } catch (error) {
                 console.log(error);
@@ -26,7 +26,7 @@ function useFetch(url, method, headers, body) {
         })();
     }, [url]);
 
-    return { data, isLoading, error };
+    return { data, isLoading, error, json };
 }
 
 export default useFetch;
