@@ -1,5 +1,13 @@
+import { Container } from '@mui/material';
+import CardGrid from '../components/elements/CardGrid/index';
+
 function Home() {
-    return <div>Home</div>;
+    return (
+        <Container>
+            <div>Home</div>
+            <CardGrid />
+        </Container>
+    );
 }
 
 export default Home;

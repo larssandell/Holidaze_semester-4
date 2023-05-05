@@ -7,6 +7,10 @@ import * as yup from 'yup';
 import { loginUrl } from '../hooks/useFetch/options/options';
 import { postReqBody } from '../hooks/useFetch/options/options';
 
+import { useLoginUserMutation } from '../features/api/apiSlice';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../features/slice/dataSlice';
+
 // import useFetch from '../hooks/useFetch';
 // import { Triangle } from 'react-loader-spinner';
 // import { useEffect, useState } from 'react';
@@ -26,6 +30,8 @@ const schema = yup.object({
 });
 
 function LoginModal() {
+    const [loginUser, { error }] = useLoginUserMutation();
+    const dispatch = useDispatch();
     const {
         handleSubmit,
         control,
@@ -41,16 +47,26 @@ function LoginModal() {
     const onSubmit = async (inputData) => {
         // console.log('form data', inputData);
 
-        const loginUser = await postReqBody(loginUrl, inputData);
+        // const loginUser = await postReqBody(loginUrl, inputData);
+        try {
+            const userData = await loginUser(inputData);
+            dispatch(setCredentials({ ...userData }));
+            console.log(userData);
+            console.log('error', error);
+            // console.log('status', userData.error.status);
 
-        console.log('response + json', loginUser);
-        console.log(' only response', loginUser.response);
-        if (loginUser.response.ok === true) {
-            console.log(loginUser.response.ok);
-            sessionStorage.setItem('User', JSON.stringify(loginUser.json));
-            toast.success(`'${loginUser.json.name} login success'`);
-        } else {
-            console.log('feilet');
+            if ('error' in userData) {
+                console.log('some error');
+                toast.error(
+                    `Login error: ${userData.error.data.errors[0].message}`
+                );
+            } else {
+                toast.success(`User: ${userData.data.name} login success`);
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            // if ()
         }
     };
 

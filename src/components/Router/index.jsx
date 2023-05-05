@@ -10,6 +10,7 @@ import Error from '../../pages/Error';
 import PrivateRoute from '../utilits/PrivateRoute';
 import LoginPage from '../../pages/LoginPage';
 import RegisterPage from '../../pages/RegisterPage';
+import SingleVenuePage from '../../pages/SingleVenue';
 
 function Router() {
     return (
@@ -27,6 +28,7 @@ function Router() {
                 <Route path='/login' element={<LoginPage />} />
                 <Route path='/register' element={<RegisterPage />} />
                 <Route path='/complete' element={<BookingComplete />} />
+                <Route path='/singlevenue' element={<SingleVenuePage />} />
                 <Route path='*' element={<Error />} />
             </Route>
         </Routes>

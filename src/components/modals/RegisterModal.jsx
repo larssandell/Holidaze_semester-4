@@ -7,6 +7,9 @@ import * as yup from 'yup';
 import { registerUrl } from '../hooks/useFetch/options/options';
 import { postReqBody } from '../hooks/useFetch/options/options';
 import { toast } from 'react-toastify';
+import { useRegisterUserMutation } from '../features/api/apiSlice';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../features/slice/dataSlice';
 
 const schema = yup.object({
     name: yup
@@ -29,6 +32,8 @@ const schema = yup.object({
 });
 
 const RegisterModal = () => {
+    const [registerUser] = useRegisterUserMutation();
+    const dispatch = useDispatch();
     const {
         handleSubmit,
         formState: { errors },
@@ -48,14 +53,22 @@ const RegisterModal = () => {
 
     const onSubmit = async (inputData) => {
         const { confirmPassword, ...rest } = inputData;
-        const registerUser = await postReqBody(rest, registerUrl);
-        console.log(registerUser);
 
-        if (registerUser.json.ok === false) {
-            toast.error(`${registerUser.json.errors[0].message}`);
-        } else {
-            toast.success(`${registerUser.json.name} Created`);
+        try {
+            const registerData = await registerUser(rest);
+            dispatch(setCredentials({ ...registerData }));
+            console.log(registerData);
+        } catch (err) {
+            console.log(err);
         }
+        // const registerUser = await postReqBody(rest, registerUrl);
+        // console.log(registerUser);
+
+        // if (registerUser.json.ok === false) {
+        //     toast.error(`${registerUser.json.errors[0].message}`);
+        // } else {
+        //     toast.success(`${registerUser.json.name} Created`);
+        // }
     };
     return (
         <Box
