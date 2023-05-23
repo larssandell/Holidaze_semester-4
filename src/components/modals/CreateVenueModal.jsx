@@ -15,13 +15,45 @@ const schema = yup.object({
         .required(
             'must not contain punctuation symbols apart from underscore (_)'
         ),
-    email: yup
+    description: yup
         .string()
         .required('Email must be a valid stud.noroff.no or noroff.no'),
-    password: yup
-        .string({ minLength: 8 })
-        .required('Must be at least 8 characters.'),
-    confirmPassword: yup
+    // media: yup
+    //     .string()
+    //     .required('URLs are required')
+    //     .matches(
+    //         /^(https?:\/\/)?(www\.)?([^\s.]+\.\S{2,}|localhost[\:?\d]*)\S*$/gm,
+    //         'Invalid URL format'
+    //     ),
+    // media2: yup.string().when('media2', {
+    //     is: (value) => value && value.trim() !== '',
+    //     then: yup
+    //         .string()
+    //         .required('Invalid URL format')
+    //         .matches(
+    //             /^(https?:\/\/)?(www\.)?([^\s.]+\.\S{2,}|localhost[\:?\d]*)\S*$/gm,
+    //             'Invalid URL format'
+    //         ),
+    // }),
+    // media: yup.string().when('media', {
+    //     is: (value) => value && value.trim() !== '',
+    //     then: yup
+    //         .string()
+    //         .required('Input field is required')
+    //         .matches(
+    //             /^(https?:\/\/)?(www\.)?([^\s.]+\.\S{2,}|localhost[\:?\d]*)\S*$/,
+    //             'Invalid URL format'
+    //         ),
+    // }),
+    media3: yup
+        .string()
+        .required('URLs are required')
+        .matches(
+            /^(https?:\/\/)?(www\.)?([^\s.]+\.\S{2,}|localhost[\:?\d]*)\S*$/gm,
+            'Invalid URL format'
+        ),
+
+    price: yup
         .string()
         .label('Confirm Password')
         .required()
@@ -29,7 +61,7 @@ const schema = yup.object({
     // avatar: yup.string().required('value must be a valid URL.'),
 });
 
-const RegisterModal = () => {
+const CreateVenueModal = () => {
     const [msgOk, setMsgOk] = useState('');
     const [msgErr, setMsgErr] = useState('');
     // const dispatch = useDispatch();
@@ -42,11 +74,16 @@ const RegisterModal = () => {
     } = useForm({
         defaultValues: {
             name: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-            avatar: '',
-            venueManager: false,
+            description: '',
+            price: 0,
+            maxGuests: 0,
+            rating: 0,
+            wifi: false,
+            parking: false,
+            breakfast: false,
+            pets: false,
+            country: '',
+            media: '',
         },
         resolver: yupResolver(schema),
     });
@@ -54,12 +91,10 @@ const RegisterModal = () => {
 
     const onSubmit = async (inputData) => {
         const { confirmPassword, ...rest } = inputData;
-
         try {
             const userData = await registerUser(rest);
             console.log('first userdata', userData);
             console.log('registerUser', registerUser);
-
             if (userData.error) {
                 console.log('failed', userData);
                 console.log(userData.error.data.errors[0].message);
@@ -104,36 +139,65 @@ const RegisterModal = () => {
             <TextFields
                 control={control}
                 errors={errors}
-                name='email'
-                label='Email'
-            />
-            <TextFields
-                control={control}
-                errors={errors}
-                name='password'
-                label='Password'
-                type='password'
-            />
-            <TextFields
-                control={control}
-                errors={errors}
-                name='confirmPassword'
-                label='Confirm Password'
-                type='password'
-            />
-            <TextFields
-                control={control}
+                name='country'
+                label='Country'
                 noReq={true}
-                name='avatar'
-                label='Avatar'
-                errors={errors}
-                placeholder='Must be a valid URL'
             />
+            <TextFields
+                control={control}
+                errors={errors}
+                name='media'
+                label='Media'
+            />
+            <TextFields
+                control={control}
+                errors={errors}
+                name='media2'
+                label='Media 2'
+            />
+            <TextFields
+                control={control}
+                errors={errors}
+                name='media3'
+                label='Media 3'
+            />
+            <TextFields
+                control={control}
+                errors={errors}
+                name='description'
+                label='Description'
+            />
+            <TextFields
+                control={control}
+                errors={errors}
+                name='price'
+                label='Price'
+                type='number'
+            />
+            <TextFields
+                control={control}
+                errors={errors}
+                name='maxGuests'
+                label='Max Guests'
+                type='number'
+            />
+            <TextFields
+                control={control}
+                errors={errors}
+                noReq={true}
+                name='rating'
+                label='Rating'
+                type='number'
+            />
+            <SwitchFields control={control} name='wifi' label='Wifi' />
+            <SwitchFields control={control} name='parking' label='Parking' />
             <SwitchFields
                 control={control}
-                name='venueManager'
-                label='Venue Manager'
+                name='breakfast'
+                label='Breakfast'
             />
+            <SwitchFields control={control} name='pets' label='Pets' />
+
             <Button
                 type='submit'
                 fullWidth
@@ -146,4 +210,4 @@ const RegisterModal = () => {
     );
 };
 
-export default RegisterModal;
+export default CreateVenueModal;

@@ -4,8 +4,9 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
-import { loginUrl } from '../hooks/useFetch/options/options';
-import { postReqBody } from '../hooks/useFetch/options/options';
+import { useLoginUserMutation } from '../features/rtkSlices/apiSlice';
+import { useDispatch } from 'react-redux';
+import { setCredentials, setUser } from '../features/rtkSlices/dataSlice';
 
 // import useFetch from '../hooks/useFetch';
 // import { Triangle } from 'react-loader-spinner';
@@ -26,6 +27,9 @@ const schema = yup.object({
 });
 
 function LoginModal() {
+    const [loginUser] = useLoginUserMutation();
+    const dispatch = useDispatch();
+
     const {
         handleSubmit,
         control,
@@ -39,18 +43,12 @@ function LoginModal() {
     });
 
     const onSubmit = async (inputData) => {
-        // console.log('form data', inputData);
-
-        const loginUser = await postReqBody(loginUrl, inputData);
-
-        console.log('response + json', loginUser);
-        console.log(' only response', loginUser.response);
-        if (loginUser.response.ok === true) {
-            console.log(loginUser.response.ok);
-            sessionStorage.setItem('User', JSON.stringify(loginUser.json));
-            toast.success(`'${loginUser.json.name} login success'`);
-        } else {
-            console.log('feilet');
+        try {
+            const userData = await loginUser(inputData);
+            dispatch(setCredentials({ ...userData }));
+            console.log(userData);
+        } catch (err) {
+            console.log(err);
         }
     };
 

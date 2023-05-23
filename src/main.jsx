@@ -7,25 +7,31 @@ import './index.css';
 import { ThemeProvider } from '@mui/material';
 import myTheme from './theme';
 import { ToastContainer } from 'react-toastify';
+import { Provider } from 'react-redux';
+import store from './store';
+import AuthProvider from './components/utils/Auth/auth';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <ThemeProvider theme={myTheme}>
-            <ToastContainer
-                position='top-right'
-                autoClose={1000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme='light'
-            />
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </ThemeProvider>
+        <BrowserRouter>
+            <Provider store={store}>
+                <ThemeProvider theme={myTheme}>
+                    <ToastContainer
+                        position='top-right'
+                        autoClose={1000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme='light'
+                    />
+
+                    <App />
+                </ThemeProvider>
+            </Provider>
+        </BrowserRouter>
     </React.StrictMode>
 );

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { NavLink, Link } from 'react-router-dom';
 import {
     AppBar,
     Avatar,
@@ -16,7 +16,10 @@ import {
     Modal,
     Typography,
     Button,
+    BottomNavigation,
+    BottomNavigationAction,
 } from '@mui/material';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { ChevronRight, MenuRounded } from '@mui/icons-material';
 // import Modals from '../../modals/modals';
 import logo from '../../../assets/logo/holidazelogo.png';
@@ -24,6 +27,11 @@ import useStatus from '../../hooks/useStatus';
 import { styleModal } from '../../modals/modalstyle';
 import RegisterModal from '../../modals/RegisterModal';
 import LoginModal from '../../modals/LoginModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { AuthContext } from '../../utils/Auth/auth';
+import { logOutUser } from '../../features/rtkSlices/dataSlice';
+import ModalComp from '../../modals/ModalComp';
+// import { AuthContext } from '../../utils/Auth/auth';
 
 // import { theme } from '../theme';
 
@@ -44,31 +52,9 @@ const StyledDiv = styled('div')({
     flexDirection: 'row-reverse',
 });
 
-// const navInfo = {
-//     manager: [
-//         { name: 'Home', url: '/' },
-//         { name: 'Venues', url: '/venues' },
-//         { name: 'Profile', url: '/profile' },
-//         { name: 'Create Venue', url: '/create' },
-//         { name: 'logout', url: '/create' },
-//     ],
-//     registered: [
-//         { name: 'Home', url: '/' },
-//         { name: 'Venues', url: '/venues' },
-//         { name: 'Logout', url: '/profile' },
-//     ],
-//     user: [
-//         { name: 'Home', url: '/' },
-//         { name: 'Venues', url: '/venues' },
-//         { name: 'Register', url: '/profile' },
-//     ],
-// };
-
 const pages = [
     { name: 'Home', url: '/' },
     { name: 'Venues', url: '/venues' },
-    { name: 'Profile', url: '/profile' },
-    { name: 'Create Venue', url: '/create' },
 ];
 
 const StyledDivider = styled(Divider)({
@@ -77,6 +63,16 @@ const StyledDivider = styled(Divider)({
 // const StyledMenu = styled(Menu)({
 //     backgroundColor: 'blue',
 // });
+const StyledIconButton = styled(IconButton)({
+    backgroundColor: 'transparent',
+    color: '#000',
+    width: '100px',
+    height: '100px',
+    '&:hover': {
+        color: '#blue',
+        backgroundColor: 'transparent',
+    },
+});
 
 // const UserBox = styled(Box)(({ theme }) => ({
 //     display: 'flex',
@@ -93,19 +89,42 @@ function Header() {
     const { status: regModal, toggleStatus: toggleRegModal } = useStatus(false);
     const { status: loginModal, toggleStatus: toggleLoginModal } =
         useStatus(false);
+
     const theme = useTheme();
     const medium = useMediaQuery(theme.breakpoints.up('md'));
+    const { isUser, setIsUser } = useContext(AuthContext);
+    const dispatch = useDispatch();
+
+    const handleLogOut = () => {
+        dispatch(logOutUser());
+        console.log('Loggged OUT');
+    };
+
+    const userProfile = useSelector((state) => state.data);
+    console.log('userAvatar', userProfile.avatar);
+
+    console.log('is logged inn: ', isUser);
+    // const { isLoggedIn, login, logout } = useContext(AuthContext);
 
     // const switchSignup = (event) => {
     //     setLoginOpen(false)
     //     setSignupOpen(true)
     //   }
 
+    // console.log(isLoggedIn);
     useEffect(() => {
         if (medium) {
             setOpen(false);
         }
     }, [medium]);
+
+    // const handleAvatarClick = () => {
+    //     if (loggedIn) {
+    //         console.log('Open profile or perform logout');
+    //     } else {
+    //         toggleLoginModal();
+    //     }
+    // };
 
     const toggleMenuDrawer = (e) => {
         if (e.type === 'keydown' && (e.key === 'tab' || e.key === 'shift')) {
@@ -139,7 +158,7 @@ function Header() {
                         {pages.map((page) => (
                             <MenuItem
                                 key={page.name}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                sx={{ my: 2, color: 'black', display: 'block' }}
                             >
                                 <NavLink to={page.url}>{page.name}</NavLink>
                             </MenuItem>
@@ -149,6 +168,7 @@ function Header() {
                         sx={{
                             flexGrow: 1,
                             display: 'flex',
+                            alignItems: 'center',
                         }}
                     >
                         <IconButton
@@ -169,16 +189,71 @@ function Header() {
                                 }}
                             />
                         </IconButton>
-                        <IconButton onClick={toggleLoginModal}>
-                            <NavLink>
-                                <Avatar
-                                    sx={{
-                                        backgroundColor: 'transparent',
-                                        fontSize: 'large',
-                                    }}
-                                ></Avatar>
-                            </NavLink>
-                        </IconButton>
+
+                        {/* ------Nav menu--------- */}
+                        {isUser ? (
+                            <BottomNavigation
+                                sx={{
+                                    backgroundColor: 'transparent',
+                                    display: { xs: 'none', md: 'flex' },
+                                }}
+                            >
+                                <BottomNavigationAction
+                                    label='Logout'
+                                    onClick={handleLogOut}
+                                    icon={
+                                        <LogoutRoundedIcon
+                                            sx={{
+                                                fontWeight: 'bold',
+                                                backgroundColor: 'transparent',
+                                                color: '#fff',
+                                                height: '30px',
+                                                width: 'auto',
+                                                verticalAlign: 'baseline',
+                                            }}
+                                        />
+                                    }
+                                />
+                                <BottomNavigationAction
+                                    label='User'
+                                    component={NavLink}
+                                    to='/profile'
+                                    icon={
+                                        <Avatar
+                                            src={userProfile.avatar || ''}
+                                            sx={{
+                                                backgroundColor: 'transparent',
+                                                height: '60px',
+                                                width: 'auto',
+                                            }}
+                                        />
+                                    }
+                                />
+                            </BottomNavigation>
+                        ) : (
+                            <BottomNavigation
+                                sx={{
+                                    backgroundColor: 'transparent',
+                                    display: { xs: 'none', md: 'flex' },
+                                }}
+                            >
+                                <BottomNavigationAction
+                                    label='User'
+                                    onClick={toggleLoginModal}
+                                    icon={
+                                        <Avatar
+                                            sx={{
+                                                backgroundColor: 'transparent',
+                                                height: '60px',
+                                                width: 'auto',
+                                                color: '#fff',
+                                            }}
+                                        />
+                                    }
+                                />
+                            </BottomNavigation>
+                        )}
+                        {/* ------Nav Drawer--------- */}
                         <Drawer
                             PaperProps={{
                                 sx: {
@@ -201,21 +276,72 @@ function Header() {
                                     </IconButton>
                                 </div>
                                 <StyledDivider />
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <IconButton sx={{ fontSize: 40 }}>
-                                        <NavLink to='/profile'>
-                                            <Avatar
-                                                sx={{
-                                                    backgroundColor: 'black',
-                                                }}
-                                            ></Avatar>
-                                        </NavLink>
-                                    </IconButton>
+                                <Box>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            my: 1,
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        {isUser ? (
+                                            <>
+                                                <div onClick={toggleMenuDrawer}>
+                                                    <StyledIconButton
+                                                        onClick={handleLogOut}
+                                                    >
+                                                        <LogoutRoundedIcon
+                                                            sx={{
+                                                                fontWeight:
+                                                                    'bold',
+                                                                backgroundColor:
+                                                                    'transparent',
+                                                                color: '#000',
+                                                                height: '40px',
+                                                                width: 'auto',
+                                                                verticalAlign:
+                                                                    'baseline',
+                                                            }}
+                                                        />
+                                                    </StyledIconButton>
+                                                    <StyledIconButton
+                                                        component={Link}
+                                                        to='/profile'
+                                                    >
+                                                        <Avatar
+                                                            sx={{
+                                                                backgroundColor:
+                                                                    'transparent',
+                                                                height: '90px',
+                                                                width: 'auto',
+                                                                color: '#000',
+                                                            }}
+                                                            src={
+                                                                userProfile.avatar
+                                                            }
+                                                        />
+                                                    </StyledIconButton>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div onClick={toggleMenuDrawer}>
+                                                <StyledIconButton
+                                                    onClick={toggleLoginModal}
+                                                >
+                                                    <Avatar
+                                                        sx={{
+                                                            backgroundColor:
+                                                                'transparent',
+                                                            height: '90px',
+                                                            width: 'auto',
+                                                            color: '#000',
+                                                        }}
+                                                    />
+                                                </StyledIconButton>
+                                            </div>
+                                        )}
+                                    </Box>
                                 </Box>
                                 <StyledDivider />
                                 {pages.map((page) => (
@@ -249,6 +375,7 @@ function Header() {
                     <Typography align='center' variant='h4'>
                         Register
                     </Typography>
+
                     <RegisterModal />
                     <Button
                         onClick={toggleLoginModal}

@@ -1,22 +1,38 @@
 html,
 body {
     height: 100%;
-    width: 100%;
-    box-sizing: none;
+    /* width: 100%; */
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    overflow-y: hidden;
 }
 
 .App {
     display: grid;
     min-height: 100vh;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 2fr 80px;
+    grid-template-columns: 100%;
+    grid-template-rows: auto 1fr auto;
 }
 footer {
     background-color: red;
 }
 .userSelectNone {
     user-select: none;
+}
+.responsive-range-picker {
+    width: 100%;
+}
+.ant-picker-panels-container {
+    flex-direction: column;
+}
+@media (min-width: 768px) {
+    .responsive-range-picker {
+        width: 50%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .responsive-range-picker {
+        width: 30%;
+    }
 }
