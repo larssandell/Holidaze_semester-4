@@ -12,7 +12,7 @@ function ImgCarousel({ images, venue }) {
                             objectFit: 'cover',
                             objectPosition: 'center',
                             width: '100%',
-                            height: '300px',
+                            height: '100%',
                         }}
                         key={index}
                         image={image}

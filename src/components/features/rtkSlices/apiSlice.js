@@ -105,27 +105,6 @@ export const holidazeApi = createApi({
                 url: `profiles/${name}`,
             }),
         }),
-        // editProfile: builder.mutation({
-        //     query: ({ user, avatar }) => ({
-        //         url: `profiles/${user}/media`,
-        //         method: 'PUT',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: avatar,
-        //     }),
-        // }),
-
-        // editProfile: builder.mutation({
-        //     query: ({ user }) => ({
-        //         url: `profiles/${user.user}/media`,
-        //         method: 'PUT',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: user.avatar,
-        //     }),
-        // }),
 
         editProfile: builder.mutation({
             query: (content) => {
@@ -135,10 +114,6 @@ export const holidazeApi = createApi({
                 return {
                     url: `profiles/${content.user}/media`,
                     method: 'PUT',
-                    // headers: {
-                    //     'Content-Type': 'application/json',
-                    // },
-                    // body: JSON.stringify(content),
                     body: content.avatar,
                 };
             },

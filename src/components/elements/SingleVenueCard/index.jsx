@@ -68,12 +68,19 @@ function SingleVenueCard({ id }) {
     if (test === true) {
         return (
             <Container>
-                <Card sx={{ mt: 3, maxWidth: '730px' }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
+                <Card sx={{ mt: 3 }}>
+                    <Grid container spacing={2} sx={{}}>
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{
+                                justifyContent: 'center',
+                                // maxHeight: '400px',
+                            }}
+                        >
                             <ImgCarousel images={venue.media} venue={venue} />
                         </Grid>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={9}>
                             <CardContent>
                                 <Typography variant='h5' component='div'>
                                     {venue.name}
