@@ -115,32 +115,34 @@ export const holidazeApi = createApi({
         //         body: avatar,
         //     }),
         // }),
-        editProfile: builder.mutation({
-            query: ({ user, rest }) => ({
-                url: `profiles/${user}/media`,
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: { ...rest },
-            }),
-        }),
+
         // editProfile: builder.mutation({
-        //     query: (user, meth) => {
-        //         // console.log('Request Body:', body);
-        //         console.log('request user', user);
-        //         console.log('request meth', meth);
-        //         return {
-        //             url: `profiles/${user}/media`,
-        //             method: meth,
-        //             // headers: {
-        //             //     'Content-Type': 'application/json',
-        //             // },
-        //             // body: JSON.stringify(content),
-        //             // body: body,
-        //         };
-        //     },
+        //     query: ({ user }) => ({
+        //         url: `profiles/${user.user}/media`,
+        //         method: 'PUT',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: user.avatar,
+        //     }),
         // }),
+
+        editProfile: builder.mutation({
+            query: (content) => {
+                // console.log('Request Body:', body);
+                console.log('request user', content.user);
+                console.log('request meth', content.avatar);
+                return {
+                    url: `profiles/${content.user}/media`,
+                    method: 'PUT',
+                    // headers: {
+                    //     'Content-Type': 'application/json',
+                    // },
+                    // body: JSON.stringify(content),
+                    body: content.avatar,
+                };
+            },
+        }),
         delete: builder.mutation({
             query: ({ path, id }) => ({
                 url: `${path}/${id}`,

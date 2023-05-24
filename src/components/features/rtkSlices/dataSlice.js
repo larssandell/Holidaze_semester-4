@@ -89,7 +89,6 @@ export const dataSlice = createSlice({
                     state.apiDataStatus = 'Rejected';
                 }
             );
-        // .addMatcher()
     },
 });
 

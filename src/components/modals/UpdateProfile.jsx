@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useEditProfileMutation } from '../features/rtkSlices/apiSlice';
+import { toast } from 'react-toastify';
 
 const schema = yup.object({
     avatar: yup
@@ -16,9 +17,7 @@ const schema = yup.object({
 });
 
 function UpdateProfile({ user, refetch, toggleCreateVenueModal }) {
-    // console.log('user', user);
-    const [editProfile, { isSuccess, isLoading }] =
-        useEditProfileMutation(user);
+    const [editProfile, { isSuccess, isLoading }] = useEditProfileMutation();
     const {
         handleSubmit,
         formState: { errors },
@@ -31,24 +30,21 @@ function UpdateProfile({ user, refetch, toggleCreateVenueModal }) {
     });
 
     const onSubmit = async (content) => {
-        console.log('content', content);
-        const fuckYouRtk = content;
-        const testMe = user + content;
-        // const body = { ...content };
-        // const data = JSON.stringify(content);
-        console.log('Fuck you RTK', fuckYouRtk);
-        // const avatar = JSON.stringify(inputData);
-        // console.log('from on submit', user);
+        const myArray = {
+            user: user,
+            avatar: { ...content },
+        };
 
-        const test = await editProfile(testMe);
+        const test = await editProfile(myArray);
         // editProfile(user);
         console.log(test);
         // console.log('update avatar!!', test, isSuccess, isLoading);
-        // setTimeout(() => {
-        //     refetch();
-        //     console.log('refetch');
-        //     toggleCreateVenueModal;
-        // }, 1000);
+        setTimeout(() => {
+            refetch();
+            console.log('refetch');
+            toggleCreateVenueModal;
+            toast.success('Profile avatar updated');
+        }, 1000);
     };
 
     return (

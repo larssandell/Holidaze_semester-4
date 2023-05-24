@@ -50,7 +50,6 @@ const RegisterModal = () => {
         },
         resolver: yupResolver(schema),
     });
-    // console.log(errors);
 
     const onSubmit = async (inputData) => {
         const { confirmPassword, ...rest } = inputData;
@@ -68,7 +67,6 @@ const RegisterModal = () => {
                 );
                 setMsgErr(`Error: ${userData.error.data.errors[0].message}`);
                 setMsgOk('');
-                // setMsg = userData.error.data.errors[0].message;
             } else {
                 console.log('success');
                 setMsgErr(`User ${userData.data.name} registered`);

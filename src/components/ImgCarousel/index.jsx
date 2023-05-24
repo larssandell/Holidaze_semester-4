@@ -3,11 +3,6 @@ import noImage from '../../assets/noimage.webp';
 import { CardMedia } from '@mui/material';
 
 function ImgCarousel({ images, venue }) {
-    console.log('images', images[0]);
-    // if (images.media.length === 0) {
-    //
-    // }
-    console.log(images.length);
     if (images.length > 1) {
         return (
             <Carousel>

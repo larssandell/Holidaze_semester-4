@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
     AppBar,
     Avatar,
@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { ChevronRight, MenuRounded } from '@mui/icons-material';
-// import Modals from '../../modals/modals';
+
 import logo from '../../../assets/logo/holidazelogo.png';
 import useStatus from '../../hooks/useStatus';
 import { styleModal } from '../../modals/modalstyle';
@@ -31,9 +31,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AuthContext } from '../../utils/Auth/auth';
 import { logOutUser } from '../../features/rtkSlices/dataSlice';
 import ModalComp from '../../modals/ModalComp';
-// import { AuthContext } from '../../utils/Auth/auth';
-
-// import { theme } from '../theme';
 
 const StyledAppBar = styled(AppBar)({
     alignItems: 'center',
@@ -89,6 +86,7 @@ function Header() {
     const { status: regModal, toggleStatus: toggleRegModal } = useStatus(false);
     const { status: loginModal, toggleStatus: toggleLoginModal } =
         useStatus(false);
+    const navigate = useNavigate();
 
     const theme = useTheme();
     const medium = useMediaQuery(theme.breakpoints.up('md'));
@@ -97,34 +95,17 @@ function Header() {
 
     const handleLogOut = () => {
         dispatch(logOutUser());
-        console.log('Loggged OUT');
+        setIsUser(false);
+        navigate('/');
     };
 
     const userProfile = useSelector((state) => state.data);
-    console.log('userAvatar', userProfile.avatar);
 
-    console.log('is logged inn: ', isUser);
-    // const { isLoggedIn, login, logout } = useContext(AuthContext);
-
-    // const switchSignup = (event) => {
-    //     setLoginOpen(false)
-    //     setSignupOpen(true)
-    //   }
-
-    // console.log(isLoggedIn);
     useEffect(() => {
         if (medium) {
             setOpen(false);
         }
     }, [medium]);
-
-    // const handleAvatarClick = () => {
-    //     if (loggedIn) {
-    //         console.log('Open profile or perform logout');
-    //     } else {
-    //         toggleLoginModal();
-    //     }
-    // };
 
     const toggleMenuDrawer = (e) => {
         if (e.type === 'keydown' && (e.key === 'tab' || e.key === 'shift')) {
@@ -223,8 +204,8 @@ function Header() {
                                             src={userProfile.avatar || ''}
                                             sx={{
                                                 backgroundColor: 'transparent',
-                                                height: '60px',
-                                                width: 'auto',
+                                                height: 40,
+                                                width: 40,
                                             }}
                                         />
                                     }
@@ -244,8 +225,8 @@ function Header() {
                                         <Avatar
                                             sx={{
                                                 backgroundColor: 'transparent',
-                                                height: '60px',
-                                                width: 'auto',
+                                                height: 40,
+                                                width: 40,
                                                 color: '#fff',
                                             }}
                                         />
@@ -298,8 +279,8 @@ function Header() {
                                                                 backgroundColor:
                                                                     'transparent',
                                                                 color: '#000',
-                                                                height: '40px',
-                                                                width: 'auto',
+                                                                height: 30,
+                                                                width: 30,
                                                                 verticalAlign:
                                                                     'baseline',
                                                             }}
@@ -313,8 +294,8 @@ function Header() {
                                                             sx={{
                                                                 backgroundColor:
                                                                     'transparent',
-                                                                height: '90px',
-                                                                width: 'auto',
+                                                                height: 40,
+                                                                width: 40,
                                                                 color: '#000',
                                                             }}
                                                             src={

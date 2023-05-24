@@ -6,7 +6,6 @@ export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
     const [isUser, setIsUser] = useState(false);
     const userInfo = useSelector((state) => state.data);
-    console.log('userInfo', userInfo);
 
     useEffect(() => {
         const token = userInfo.accessToken;
