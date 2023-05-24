@@ -1,27 +1,47 @@
-import { Box, Modal } from '@mui/material';
+import { Box, Button, Modal } from '@mui/material';
+import { useState } from 'react';
 
-const ModalComp = ({ isOpen, onClose, children, title }) => {
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    minWidth: 300,
+    bgcolor: 'background.paper',
+    // border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+const ModalComp = ({ children, title, btnName, refetch }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleOpen = () => setIsOpen(true);
+    const handleClose = () => setIsOpen(false);
     return (
-        <Modal
-            open={isOpen}
-            onClose={onClose}
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-            aria-labelledby={title}
-        >
-            <Box
+        <>
+            <Button onClick={handleOpen}>{btnName}</Button>
+            <Modal
+                open={isOpen}
+                onClose={handleClose}
                 sx={{
-                    backgroundColor: 'background.paper',
-                    boxShadow: 5,
-                    padding: '2rem 4rem 3rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                 }}
+                aria-labelledby={title}
             >
-                {children}
-            </Box>
-        </Modal>
+                <Box
+                    sx={style}
+                    // sx={{
+                    //     backgroundColor: 'background.paper',
+                    //     boxShadow: 5,
+                    //     padding: '2rem 4rem 3rem',
+                    // }}
+                >
+                    {children}
+                </Box>
+            </Modal>
+        </>
     );
 };
 

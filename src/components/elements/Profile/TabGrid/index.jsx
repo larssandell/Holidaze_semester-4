@@ -4,7 +4,6 @@ import ProfileCards from '../ProfileCards';
 import noImage from '../../../../assets/noimagewhite.webp';
 
 export const TabGridBookings = ({ items, onDelete, onEdit, type, img }) => {
-    console.log('tabGridBookings', items);
     return (
         <>
             {items.length === 0 ? (
@@ -28,7 +27,6 @@ export const TabGridBookings = ({ items, onDelete, onEdit, type, img }) => {
     );
 };
 export const TabGridVenues = ({ items, onDelete, onEdit, type }) => {
-    console.log('tabGridVenues', items);
     return (
         <>
             {items.length === 0 ? (

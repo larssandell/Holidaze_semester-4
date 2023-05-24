@@ -16,7 +16,7 @@ const schema = yup.object({
         ),
 });
 
-function UpdateProfile({ user, refetch, toggleCreateVenueModal }) {
+function UpdateProfile({ user, refetch }) {
     const [editProfile, { isSuccess, isLoading }] = useEditProfileMutation();
     const {
         handleSubmit,
@@ -36,14 +36,13 @@ function UpdateProfile({ user, refetch, toggleCreateVenueModal }) {
         };
 
         const test = await editProfile(myArray);
-        // editProfile(user);
         console.log(test);
         // console.log('update avatar!!', test, isSuccess, isLoading);
         setTimeout(() => {
             refetch();
             console.log('refetch');
-            toggleCreateVenueModal;
             toast.success('Profile avatar updated');
+            setIsOpen = true;
         }, 1000);
     };
 

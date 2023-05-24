@@ -3,9 +3,7 @@ import {
     Typography,
     Container,
     Grid,
-    Paper,
     Button,
-    Box,
     Card,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -34,7 +32,6 @@ const Profile = () => {
     const { status: editProfile, toggleStatus: toggleEditProfile } =
         useStatus(false);
 
-    // const [openModal, setOpenModal] = useState(false);
     const handleTabChange = (event, newValue) => {
         SetActiveTab(newValue);
     };
@@ -77,18 +74,13 @@ const Profile = () => {
         error: bookingsError,
         refetch: bookingsVenues,
     } = useGetProfileBookingsQuery(user);
-    // console.log('Bookings', bookings, bookingsError, bookingsLoading);
-    // console.log('Bookings venue', bookings);
+
     if (isLoading) {
         <Container>
             <Loader />
         </Container>;
     }
     // console.log('!!', data, isError, isFetching, isLoading, error);
-
-    const handleEditProfile = (e) => {
-        e.preventDefault();
-    };
 
     return (
         <Container
@@ -98,7 +90,7 @@ const Profile = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={4} md={3} lg={2}>
                         <Avatar
-                            variant='square'
+                            variant='rounded'
                             src={data.avatar ? data.avatar : ''}
                             sx={{
                                 width: 150,
@@ -120,24 +112,23 @@ const Profile = () => {
                         <Typography variant='body2' color='textSecondary'>
                             {`Email: ${data.email}`}
                         </Typography>
-                        <Button onClick={toggleCreateVenueModal}>
+                        {/* <Button onClick={toggleCreateVenueModal}>
                             Create Venue
-                        </Button>
+                        </Button> */}
                         <ModalComp
-                            isOpen={createVenueModal}
-                            onClose={toggleCreateVenueModal}
+                            btnName='Create Venue'
+                            // isOpen={createVenueModal}
+                            // onClose={toggleCreateVenueModal}
                         >
                             <CreateVenueModal />
                         </ModalComp>
-                        <Button onClick={toggleEditProfile}>Edit</Button>
-                        <ModalComp
-                            isOpen={editProfile}
-                            onClose={toggleEditProfile}
-                        >
+                        {/* <Button onClick={toggleEditProfile}>Edit</Button> */}
+                        <ModalComp btnName='update'>
                             <UpdateProfile
                                 user={user}
                                 refetch={refetch}
-                                closeModal={toggleCreateVenueModal}
+
+                                // closeModal={toggleCreateVenueModal}
                             />
                         </ModalComp>
                     </Grid>
@@ -166,7 +157,6 @@ const Profile = () => {
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
                                     type='Bookings'
-                                    // img={bookings.venue.media[0]}
                                 />
                             </div>
                         )}
