@@ -23,6 +23,7 @@ import useStatus from '../../hooks/useStatus';
 import ModalComp from '../../modals/ModalComp';
 import CreateVenueModal from '../../modals/CreateVenueModal';
 import UpdateProfile from '../../modals/UpdateProfile';
+import DialogComp from '../../modals/DialogComp';
 
 const Profile = () => {
     const [activeTab, SetActiveTab] = useState(0);
@@ -115,22 +116,37 @@ const Profile = () => {
                         {/* <Button onClick={toggleCreateVenueModal}>
                             Create Venue
                         </Button> */}
-                        <ModalComp
-                            btnName='Create Venue'
-                            // isOpen={createVenueModal}
-                            // onClose={toggleCreateVenueModal}
-                        >
-                            <CreateVenueModal />
-                        </ModalComp>
+                        {data.venueManager ? (
+                            <DialogComp
+                                btnName='Create Venue'
+                                title='Create Venue'
+                                // isOpen={createVenueModal}
+                                // onClose={toggleCreateVenueModal}
+                            >
+                                <CreateVenueModal />
+                            </DialogComp>
+                        ) : (
+                            ''
+                        )}
+
                         {/* <Button onClick={toggleEditProfile}>Edit</Button> */}
-                        <ModalComp btnName='update'>
+                        {/* <ModalComp
+                            title='Update Profile avatar'
+                            btnName='Update'
+                        >
+                            <UpdateProfile user={user} refetch={refetch} />
+                        </ModalComp> */}
+                        <DialogComp btnName='update' title='Edit Avatar'>
+                            <UpdateProfile user={user} refetch={refetch} />
+                        </DialogComp>
+                        {/* <ModalComp btnName='update'>
                             <UpdateProfile
                                 user={user}
                                 refetch={refetch}
 
                                 // closeModal={toggleCreateVenueModal}
                             />
-                        </ModalComp>
+                        </ModalComp> */}
                     </Grid>
                 </Grid>
             </Card>
