@@ -20,9 +20,7 @@ const schema = yup.object({
 function UpdateProfile({ user, refetch, handleClose }) {
     const [editProfile, { errors: editError, isLoading }] =
         useEditProfileMutation();
-    const handleCloseFunc = () => {
-        handleClose();
-    };
+
     const {
         handleSubmit,
         formState: { errors },
@@ -40,8 +38,8 @@ function UpdateProfile({ user, refetch, handleClose }) {
             avatar: { ...content },
         };
 
-        const test = await editProfile(myArray);
-        console.log(test);
+        const updateAvatar = await editProfile(myArray);
+        console.log(updateAvatar);
         if (editError) {
             toast.error(`failed to update ${errors}`);
             return;

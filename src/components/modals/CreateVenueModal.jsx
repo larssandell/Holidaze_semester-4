@@ -6,66 +6,33 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { useRegisterUserMutation } from '../features/rtkSlices/apiSlice';
+import {
+    useCreateVenueMutation,
+    useRegisterUserMutation,
+} from '../features/rtkSlices/apiSlice';
 import { useState } from 'react';
+import {
+    removeEmptyInputsCreateVenue,
+    validateAndConvertMedia,
+} from '../constants';
 
 const schema = yup.object({
-    name: yup
-        .string()
-        .required(
-            'must not contain punctuation symbols apart from underscore (_)'
-        ),
-    description: yup
-        .string()
-        .required('Email must be a valid stud.noroff.no or noroff.no'),
-    // media: yup
-    //     .string()
-    //     .required('URLs are required')
-    //     .matches(
-    //         /^(https?:\/\/)?(www\.)?([^\s.]+\.\S{2,}|localhost[\:?\d]*)\S*$/gm,
-    //         'Invalid URL format'
-    //     ),
-    // media2: yup.string().when('media2', {
-    //     is: (value) => value && value.trim() !== '',
-    //     then: yup
-    //         .string()
-    //         .required('Invalid URL format')
-    //         .matches(
-    //             /^(https?:\/\/)?(www\.)?([^\s.]+\.\S{2,}|localhost[\:?\d]*)\S*$/gm,
-    //             'Invalid URL format'
-    //         ),
-    // }),
-    // media: yup.string().when('media', {
-    //     is: (value) => value && value.trim() !== '',
-    //     then: yup
-    //         .string()
-    //         .required('Input field is required')
-    //         .matches(
-    //             /^(https?:\/\/)?(www\.)?([^\s.]+\.\S{2,}|localhost[\:?\d]*)\S*$/,
-    //             'Invalid URL format'
-    //         ),
-    // }),
-    media3: yup
-        .string()
-        .required('URLs are required')
-        .matches(
-            /^(https?:\/\/)?(www\.)?([^\s.]+\.\S{2,}|localhost[\:?\d]*)\S*$/gm,
-            'Invalid URL format'
-        ),
+    name: yup.string().required('Must be a title'),
+    description: yup.string().required('Must be at least five characters'),
+    country: yup.string().required('Must contain a Country'),
 
-    price: yup
-        .string()
-        .label('Confirm Password')
-        .required()
-        .oneOf([yup.ref('password'), null], 'Password do not match'),
-    // avatar: yup.string().required('value must be a valid URL.'),
+    media: yup.string().required('URL is required').url('Needs to be An URL'),
+    media2: yup.string().optional().url('Needs to be An URL'),
+    media3: yup.string().optional().url('Needs to be An URL'),
+    maxGuests: yup.number().required('must set max guests'),
+    price: yup.number().required('must set a price'),
 });
 
 const CreateVenueModal = () => {
     const [msgOk, setMsgOk] = useState('');
     const [msgErr, setMsgErr] = useState('');
     // const dispatch = useDispatch();
-    const [registerUser] = useRegisterUserMutation();
+    const [createVenue] = useCreateVenueMutation();
 
     const {
         handleSubmit,
@@ -75,45 +42,51 @@ const CreateVenueModal = () => {
         defaultValues: {
             name: '',
             description: '',
-            price: 0,
-            maxGuests: 0,
-            rating: 0,
+            price: '',
+            maxGuests: '',
             wifi: false,
             parking: false,
             breakfast: false,
             pets: false,
             country: '',
             media: '',
+            media2: '',
+            media3: '',
         },
         resolver: yupResolver(schema),
     });
     // console.log(errors);
 
     const onSubmit = async (inputData) => {
-        const { confirmPassword, ...rest } = inputData;
-        try {
-            const userData = await registerUser(rest);
-            console.log('first userdata', userData);
-            console.log('registerUser', registerUser);
-            if (userData.error) {
-                console.log('failed', userData);
-                console.log(userData.error.data.errors[0].message);
-                toast.error(
-                    `'Error: ${userData.error.data.errors[0].message}'`
-                );
-                setMsgErr(`Error: ${userData.error.data.errors[0].message}`);
-                setMsgOk('');
-                // setMsg = userData.error.data.errors[0].message;
-            } else {
-                console.log('success');
-                setMsgErr(`User ${userData.data.name} registered`);
-                setMsgOk('');
-                toast.success(`'User ${userData.data.name} registered'`);
-                resetForm();
-            }
-        } catch (err) {
-            console.log(err);
-        }
+        console.log(inputData);
+        const updateFormData = removeEmptyInputsCreateVenue(inputData);
+        console.log(updateFormData);
+        const updateForm = validateAndConvertMedia(inputData);
+        console.log('updateForm', updateForm);
+
+        // try {
+        //     const userData = await createVenue(updateFormData);
+        //     console.log('first userdata', userData);
+        //     console.log('registerUser', registerUser);
+        //     if (userData.error) {
+        //         console.log('failed', userData);
+        //         console.log(userData.error.data.errors[0].message);
+        //         toast.error(
+        //             `'Error: ${userData.error.data.errors[0].message}'`
+        //         );
+        //         setMsgErr(`Error: ${userData.error.data.errors[0].message}`);
+        //         setMsgOk('');
+        //         // setMsg = userData.error.data.errors[0].message;
+        //     } else {
+        //         console.log('success');
+        //         setMsgErr(`User ${userData.data.name} registered`);
+        //         setMsgOk('');
+        //         toast.success(`'User ${userData.data.name} registered'`);
+        //         resetForm();
+        //     }
+        // } catch (err) {
+        //     console.log(err);
+        // }
     };
     return (
         <Box
@@ -134,14 +107,13 @@ const CreateVenueModal = () => {
                 control={control}
                 errors={errors}
                 name='name'
-                label='Name'
+                label='Title'
             />
             <TextFields
                 control={control}
                 errors={errors}
                 name='country'
                 label='Country'
-                noReq={true}
             />
             <TextFields
                 control={control}
@@ -153,13 +125,13 @@ const CreateVenueModal = () => {
                 control={control}
                 errors={errors}
                 name='media2'
-                label='Media 2'
+                label='Media two'
             />
             <TextFields
                 control={control}
                 errors={errors}
                 name='media3'
-                label='Media 3'
+                label='Media three'
             />
             <TextFields
                 control={control}
@@ -181,22 +153,30 @@ const CreateVenueModal = () => {
                 label='Max Guests'
                 type='number'
             />
-            <TextFields
-                control={control}
-                errors={errors}
-                noReq={true}
-                name='rating'
-                label='Rating'
-                type='number'
-            />
-            <SwitchFields control={control} name='wifi' label='Wifi' />
-            <SwitchFields control={control} name='parking' label='Parking' />
             <SwitchFields
+                defaultValues={false}
+                control={control}
+                name='wifi'
+                label='Wifi'
+            />
+            <SwitchFields
+                defaultValues={false}
+                control={control}
+                name='parking'
+                label='Parking'
+            />
+            <SwitchFields
+                defaultValues={false}
                 control={control}
                 name='breakfast'
                 label='Breakfast'
             />
-            <SwitchFields control={control} name='pets' label='Pets' />
+            <SwitchFields
+                defaultValues={false}
+                control={control}
+                name='pets'
+                label='Pets'
+            />
 
             <Button
                 type='submit'

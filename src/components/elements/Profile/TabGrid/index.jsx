@@ -9,7 +9,7 @@ export const TabGridBookings = ({ items, onDelete, onEdit, type, img }) => {
             {items.length === 0 ? (
                 <p>{`No Current ${type}`}</p>
             ) : (
-                <Grid container spacing={2} sx={{ my: 1 }}>
+                <Grid container spacing={2} sx={{ my: 1, ml: 0 }}>
                     {items.map((item) => (
                         <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
                             <ProfileCards
@@ -32,7 +32,7 @@ export const TabGridVenues = ({ items, onDelete, onEdit, type }) => {
             {items.length === 0 ? (
                 <p>{`No Current ${type}`}</p>
             ) : (
-                <Grid container spacing={2} sx={{ my: 1 }}>
+                <Grid container spacing={2} sx={{ my: 1, ml: 0 }}>
                     {items.map((item) => (
                         <Grid item key={item.id} xs={12} sm={6} md={4} lg={3}>
                             <ProfileCards
