@@ -5,6 +5,7 @@ import {
     Grid,
     Button,
     Card,
+    Box,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import {
@@ -15,12 +16,10 @@ import {
 import { useEffect, useState } from 'react';
 import TabComp from '../TabPanel/index';
 import Loader from '../../Loader';
-import { handleCreateVenue, handleDelete } from './Buttons';
+import { handleDelete } from './Buttons';
 import { handleEdit } from './Buttons';
 import { TabGridBookings, TabGridVenues } from './TabGrid';
-
 import useStatus from '../../hooks/useStatus';
-import ModalComp from '../../modals/ModalComp';
 import CreateVenueModal from '../../modals/CreateVenueModal';
 import UpdateProfile from '../../modals/UpdateProfile';
 import DialogComp from '../../modals/DialogComp';
@@ -66,6 +65,7 @@ const Profile = () => {
         data: venues = [],
         isLoading: venuesLoading,
         error: venuesError,
+        refetch: refetchVenues,
     } = useGetProfileVenuesQuery(user);
     // console.log('venues', venues, venuesError, venuesLoading);
 
@@ -73,7 +73,7 @@ const Profile = () => {
         data: bookings = [],
         isLoading: bookingsLoading,
         error: bookingsError,
-        refetch: bookingsVenues,
+        refetch: bookingsBookings,
     } = useGetProfileBookingsQuery(user);
 
     if (isLoading) {
@@ -81,7 +81,6 @@ const Profile = () => {
             <Loader />
         </Container>;
     }
-    // console.log('!!', data, isError, isFetching, isLoading, error);
 
     return (
         <Container
@@ -113,40 +112,19 @@ const Profile = () => {
                         <Typography variant='body2' color='textSecondary'>
                             {`Email: ${data.email}`}
                         </Typography>
-                        {/* <Button onClick={toggleCreateVenueModal}>
-                            Create Venue
-                        </Button> */}
                         {data.venueManager ? (
                             <DialogComp
                                 btnName='Create Venue'
                                 title='Create Venue'
-                                // isOpen={createVenueModal}
-                                // onClose={toggleCreateVenueModal}
                             >
                                 <CreateVenueModal />
                             </DialogComp>
                         ) : (
                             ''
                         )}
-
-                        {/* <Button onClick={toggleEditProfile}>Edit</Button> */}
-                        {/* <ModalComp
-                            title='Update Profile avatar'
-                            btnName='Update'
-                        >
-                            <UpdateProfile user={user} refetch={refetch} />
-                        </ModalComp> */}
                         <DialogComp btnName='update' title='Edit Avatar'>
                             <UpdateProfile user={user} refetch={refetch} />
                         </DialogComp>
-                        {/* <ModalComp btnName='update'>
-                            <UpdateProfile
-                                user={user}
-                                refetch={refetch}
-
-                                // closeModal={toggleCreateVenueModal}
-                            />
-                        </ModalComp> */}
                     </Grid>
                 </Grid>
             </Card>
@@ -167,24 +145,24 @@ const Profile = () => {
                         />
 
                         {activeTab === 0 && (
-                            <div>
+                            <Container sx={{ pb: 1, ml: 0 }}>
                                 <TabGridBookings
                                     items={bookings}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
                                     type='Bookings'
                                 />
-                            </div>
+                            </Container>
                         )}
                         {activeTab === 1 && (
-                            <div>
+                            <Container sx={{ pb: 1 }}>
                                 <TabGridVenues
                                     items={venues}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
                                     type='Venues'
                                 />
-                            </div>
+                            </Container>
                         )}
                     </Grid>
                 </Grid>

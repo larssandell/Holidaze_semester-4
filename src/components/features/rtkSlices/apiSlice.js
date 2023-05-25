@@ -36,6 +36,13 @@ export const holidazeApi = createApi({
                 params: { q: userData },
             }),
         }),
+        createVenue: builder.mutation({
+            query: (form) => ({
+                url: 'venues',
+                method: 'POST',
+                body: { ...form },
+            }),
+        }),
         loginUser: builder.mutation({
             query: (credentials) => ({
                 url: 'auth/login',
@@ -144,4 +151,5 @@ export const {
     useGetProfileBookingsQuery,
     useGetProfileVenuesQuery,
     useDeleteMutation,
+    useCreateVenueMutation,
 } = holidazeApi;

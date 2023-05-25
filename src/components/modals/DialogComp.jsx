@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     Dialog,
     DialogTitle,
@@ -9,12 +8,13 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
-const DialogComp = ({ children, title, btnName }) => {
+const DialogComp = (props) => {
+    const { children, title, btnName } = props;
     const [isOpen, setIsOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
 
-    const handleClickDialog = (scrollType) => () => {
-        setIsOpen((prev) => !prev);
+    const handleClickOpen = (scrollType) => () => {
+        setIsOpen(true);
         setScroll(scrollType);
     };
 
@@ -27,7 +27,7 @@ const DialogComp = ({ children, title, btnName }) => {
             }
         }
     }, [open]);
-    const handleOpen = () => setIsOpen(true);
+
     const handleClose = () => setIsOpen(false);
     const childrenWithProps = React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
@@ -38,11 +38,11 @@ const DialogComp = ({ children, title, btnName }) => {
 
     return (
         <>
-            <Button onClick={handleClickDialog('paper')}>{btnName}</Button>
+            <Button onClick={handleClickOpen('paper')}>{btnName}</Button>
             <Dialog
                 scroll={scroll}
                 open={isOpen}
-                onClose={handleClickDialog}
+                onClose={handleClose}
                 aria-labelledby={`scroll-dialog-${title}`}
             >
                 <DialogTitle
