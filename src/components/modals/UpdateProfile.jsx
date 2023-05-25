@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useEditProfileMutation } from '../features/rtkSlices/apiSlice';
 import { toast } from 'react-toastify';
+import FormErrorMessage from './form/ErrorMessage';
 
 const schema = yup.object({
     avatar: yup
@@ -16,8 +17,12 @@ const schema = yup.object({
         ),
 });
 
-function UpdateProfile({ user, refetch }) {
-    const [editProfile, { isSuccess, isLoading }] = useEditProfileMutation();
+function UpdateProfile({ user, refetch, handleClose }) {
+    const [editProfile, { errors: editError, isLoading }] =
+        useEditProfileMutation();
+    const handleCloseFunc = () => {
+        handleClose();
+    };
     const {
         handleSubmit,
         formState: { errors },
@@ -37,27 +42,29 @@ function UpdateProfile({ user, refetch }) {
 
         const test = await editProfile(myArray);
         console.log(test);
+        if (editError) {
+            toast.error(`failed to update ${errors}`);
+            return;
+        }
         // console.log('update avatar!!', test, isSuccess, isLoading);
         setTimeout(() => {
             refetch();
-            console.log('refetch');
             toast.success('Profile avatar updated');
-            setIsOpen = true;
-        }, 1000);
+            handleClose();
+        }, 500);
     };
 
     return (
         <Box noValidate component='form' onSubmit={handleSubmit(onSubmit)}>
-            <Typography id='modal-modal-title' variant='h6' component='h2'>
-                Edit profile Avatar
-            </Typography>
             <TextFields
                 label='Avatar'
                 name='avatar'
                 control={control}
                 errors={errors}
             />
-            <Button type='submit'>Update</Button>
+            <Button fullWidth type='submit'>
+                Update
+            </Button>
         </Box>
     );
 }

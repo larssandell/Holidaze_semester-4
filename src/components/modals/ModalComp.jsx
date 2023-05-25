@@ -30,16 +30,7 @@ const ModalComp = ({ children, title, btnName, refetch }) => {
                 }}
                 aria-labelledby={title}
             >
-                <Box
-                    sx={style}
-                    // sx={{
-                    //     backgroundColor: 'background.paper',
-                    //     boxShadow: 5,
-                    //     padding: '2rem 4rem 3rem',
-                    // }}
-                >
-                    {children}
-                </Box>
+                <Box sx={style}>{children}</Box>
             </Modal>
         </>
     );
