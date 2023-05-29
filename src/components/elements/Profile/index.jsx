@@ -1,12 +1,4 @@
-import {
-    Avatar,
-    Typography,
-    Container,
-    Grid,
-    Button,
-    Card,
-    Box,
-} from '@mui/material';
+import { Avatar, Typography, Container, Grid, Card, Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import {
     useGetProfileBookingsQuery,
@@ -16,10 +8,8 @@ import {
 import { useEffect, useState } from 'react';
 import TabComp from '../TabPanel/index';
 import Loader from '../../Loader';
-import { handleDelete } from './Buttons';
-import { handleEdit } from './Buttons';
+
 import { TabGridBookings, TabGridVenues } from './TabGrid';
-import useStatus from '../../hooks/useStatus';
 import CreateVenueModal from '../../modals/CreateVenueModal';
 import UpdateProfile from '../../modals/UpdateProfile';
 import DialogComp from '../../modals/DialogComp';
@@ -27,23 +17,9 @@ import DialogComp from '../../modals/DialogComp';
 const Profile = () => {
     const [activeTab, SetActiveTab] = useState(0);
 
-    const { status: createVenueModal, toggleStatus: toggleCreateVenueModal } =
-        useStatus(false);
-    const { status: editProfile, toggleStatus: toggleEditProfile } =
-        useStatus(false);
-
     const handleTabChange = (event, newValue) => {
         SetActiveTab(newValue);
     };
-
-    // const handleModal = () => {
-    //     setOpenModal(!openModal);
-    // };
-
-    // useEffect(() => {
-    //     refetchVenues();
-    //     refetchBookings();
-    // }, [refetchVenues, refetchBookings]);
 
     const tabs = [
         { label: 'Bookings', value: 0 },
@@ -51,41 +27,25 @@ const Profile = () => {
     ];
 
     const user = useSelector((state) => state.data.name);
-    const {
-        data = [],
-        isLoading,
-        isError,
-        isFetching,
-        error,
-    } = useSpecificProfileQuery(user);
+    const { data = [], isLoading, refetch } = useSpecificProfileQuery(user);
 
-    const { refetch } = useSpecificProfileQuery(user);
+    const { data: venues = [], refetch: refetchVenues } =
+        useGetProfileVenuesQuery(user);
 
-    const {
-        data: venues = [],
-        isLoading: venuesLoading,
-        error: venuesError,
-        refetch: refetchVenues,
-    } = useGetProfileVenuesQuery(user);
-    // console.log('venues', venues, venuesError, venuesLoading);
-
-    const {
-        data: bookings = [],
-        isLoading: bookingsLoading,
-        error: bookingsError,
-        refetch: bookingsBookings,
-    } = useGetProfileBookingsQuery(user);
+    const { data: bookings = [], refetch: refetchBookings } =
+        useGetProfileBookingsQuery(user);
 
     if (isLoading) {
-        <Container>
-            <Loader />
-        </Container>;
+        <Loader />;
     }
+    // må se på denne, bookings tab blir ikke oppdatert
+    // useEffect(() => {
+    //     refetchVenues();
+    //     refetchBookings();
+    // }, [activeTab]);
 
     return (
-        <Container
-            sx={{ mt: '20px', display: 'flex', flexDirection: 'column' }}
-        >
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Card>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={4} md={3} lg={2}>
@@ -117,7 +77,7 @@ const Profile = () => {
                                 btnName='Create Venue'
                                 title='Create Venue'
                             >
-                                <CreateVenueModal />
+                                <CreateVenueModal refetch={refetchVenues} />
                             </DialogComp>
                         ) : (
                             ''
@@ -148,9 +108,8 @@ const Profile = () => {
                             <Container sx={{ pb: 1, ml: 0 }}>
                                 <TabGridBookings
                                     items={bookings}
-                                    onDelete={handleDelete}
-                                    onEdit={handleEdit}
                                     type='Bookings'
+                                    refetch={refetchBookings}
                                 />
                             </Container>
                         )}
@@ -158,16 +117,15 @@ const Profile = () => {
                             <Container sx={{ pb: 1 }}>
                                 <TabGridVenues
                                     items={venues}
-                                    onDelete={handleDelete}
-                                    onEdit={handleEdit}
                                     type='Venues'
+                                    refetch={refetchVenues}
                                 />
                             </Container>
                         )}
                     </Grid>
                 </Grid>
             </Card>
-        </Container>
+        </Box>
     );
 };
 

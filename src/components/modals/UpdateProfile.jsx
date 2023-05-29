@@ -18,8 +18,7 @@ const schema = yup.object({
 });
 
 function UpdateProfile({ user, refetch, handleClose }) {
-    const [editProfile, { errors: editError, isLoading }] =
-        useEditProfileMutation();
+    const [editProfile] = useEditProfileMutation();
 
     const {
         handleSubmit,
@@ -33,23 +32,21 @@ function UpdateProfile({ user, refetch, handleClose }) {
     });
 
     const onSubmit = async (content) => {
-        const myArray = {
+        const contentArray = {
             user: user,
             avatar: { ...content },
         };
-
-        const updateAvatar = await editProfile(myArray);
-        console.log(updateAvatar);
-        if (editError) {
-            toast.error(`failed to update ${errors}`);
-            return;
+        // console.log(contentArray);
+        const updateAvatar = await editProfile(contentArray);
+        if (updateAvatar.data) {
+            setTimeout(() => {
+                refetch();
+                toast.success('Profile avatar updated');
+                handleClose();
+            }, 500);
+        } else {
+            toast.error(`error ${updateAvatar.error.data.errors[0].message}`);
         }
-        // console.log('update avatar!!', test, isSuccess, isLoading);
-        setTimeout(() => {
-            refetch();
-            toast.success('Profile avatar updated');
-            handleClose();
-        }, 500);
     };
 
     return (

@@ -17,23 +17,39 @@ export const holidazeApi = createApi({
             return headers;
         },
     }),
+    tagTypes: ['venues', 'bookings', 'profile'],
 
     endpoints: (builder) => ({
         getAllVenues: builder.query({
-            query: (userData) => ({
-                url: 'venues?sort=created&_owner=true&_bookings=true',
-                params: { q: userData },
+            query: () => ({
+                url: 'venues?_owner=true&_bookings=true',
             }),
+            transformResponse: (response) => {
+                const sortedResponse = Object.values(response).sort((a, b) => {
+                    const dateA = new Date(a.created);
+                    const dateB = new Date(b.created);
+                    return dateA - dateB;
+                });
+
+                return sortedResponse;
+            },
+            providesTags: ['venues'],
+        }),
+        getAllVenuesSearch: builder.query({
+            query: () => ({
+                url: 'venues?_owner=true&_bookings=true',
+            }),
+        }),
+
+        reFetchAllVenues: builder.query({
+            query: () => ({
+                url: 'venues?sort=created&_owner=true&_bookings=true',
+            }),
+            providesTags: ['venues'],
         }),
         getSingleVenue: builder.query({
             query: (id) => ({
                 url: `venues/${id}?_owner=true&_bookings=true`,
-            }),
-        }),
-        getShowCaseVenues: builder.query({
-            query: (userData) => ({
-                url: 'venues?limit=8&sort=created',
-                params: { q: userData },
             }),
         }),
         createVenue: builder.mutation({
@@ -42,6 +58,7 @@ export const holidazeApi = createApi({
                 method: 'POST',
                 body: { ...form },
             }),
+            invalidatesTags: ['venues'],
         }),
         loginUser: builder.mutation({
             query: (credentials) => ({
@@ -68,6 +85,7 @@ export const holidazeApi = createApi({
             query: () => ({
                 url: 'bookings',
             }),
+            providesTags: ['bookings'],
         }),
         getBookingsID: builder.query({
             query: (id) => ({
@@ -80,6 +98,7 @@ export const holidazeApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['bookings'],
         }),
 
         venueRequestId: builder.mutation({
@@ -93,13 +112,24 @@ export const holidazeApi = createApi({
             query: () => ({
                 url: 'profiles?_bookings=true&_venues=true',
             }),
+            providesTags: ['profile'],
         }),
         getProfileBookings: builder.query({
             query: (name) => ({
                 url: `profiles/${name}/bookings?sort=created&_venue=true`,
-                // transformResponse: (res) =>
-                //     res.sort((a, b) => b.fromDate - a.fromDate),
+                transformResponse: (response) => {
+                    const sortedResponse = Object.values(response).sort(
+                        (a, b) => {
+                            const dateA = new Date(a.dateFrom);
+                            const dateB = new Date(b.dateFrom);
+                            return dateA - dateB;
+                        }
+                    );
+
+                    return sortedResponse;
+                },
             }),
+            providesTags: ['bookings'],
         }),
         getProfileVenues: builder.query({
             query: (name) => ({
@@ -116,20 +146,38 @@ export const holidazeApi = createApi({
         editProfile: builder.mutation({
             query: (content) => {
                 // console.log('Request Body:', body);
-                console.log('request user', content.user);
-                console.log('request meth', content.avatar);
                 return {
                     url: `profiles/${content.user}/media`,
                     method: 'PUT',
                     body: content.avatar,
                 };
             },
+            invalidatesTags: ['profile'],
         }),
-        delete: builder.mutation({
-            query: ({ path, id }) => ({
-                url: `${path}/${id}`,
+        editVenue: builder.mutation({
+            query: (content) => {
+                // console.log('Request Body:', body);
+                // console.log('request content.id', content.id);
+                // console.log('request content.data', content.data);
+                return {
+                    url: `venues/${content.id}`,
+                    method: 'PUT',
+                    body: { ...content.data },
+                };
+            },
+        }),
+        deleteVenue: builder.mutation({
+            query: (id) => ({
+                url: `venues/${id}`,
                 method: 'DELETE',
             }),
+        }),
+        deleteBooking: builder.mutation({
+            query: (id) => ({
+                url: `bookings/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['bookings'],
         }),
     }),
 });
@@ -137,7 +185,6 @@ export const holidazeApi = createApi({
 export const {
     useGetAllVenuesQuery,
     useLoginUserMutation,
-    useGetShowCaseVenuesQuery,
     useRegisterUserMutation,
     useGetSingleVenueQuery,
     useGetProfilesQuery,
@@ -150,6 +197,10 @@ export const {
     useMakeBookingMutation,
     useGetProfileBookingsQuery,
     useGetProfileVenuesQuery,
-    useDeleteMutation,
+    useDeleteBookingMutation,
+    useDeleteVenueMutation,
     useCreateVenueMutation,
+    useEditVenueMutation,
+    useReFetchAllVenuesQuery,
+    useGetAllVenuesSearchQuery,
 } = holidazeApi;

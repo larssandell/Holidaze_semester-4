@@ -8,10 +8,6 @@ import { useLoginUserMutation } from '../features/rtkSlices/apiSlice';
 import { useDispatch } from 'react-redux';
 import { setCredentials, setUser } from '../features/rtkSlices/dataSlice';
 
-// import useFetch from '../hooks/useFetch';
-// import { Triangle } from 'react-loader-spinner';
-// import { useEffect, useState } from 'react';
-
 const schema = yup.object({
     email: yup
         .string()
@@ -26,8 +22,8 @@ const schema = yup.object({
         .required('The password value must be at least 8 characters.'),
 });
 
-function LoginModal() {
-    const [loginUser] = useLoginUserMutation();
+function LoginModal({ toggleLoginModal }) {
+    const [loginUser, isError, isSuccess] = useLoginUserMutation();
     const dispatch = useDispatch();
 
     const {
@@ -45,10 +41,21 @@ function LoginModal() {
     const onSubmit = async (inputData) => {
         try {
             const userData = await loginUser(inputData);
-            dispatch(setCredentials({ ...userData }));
-            console.log(userData);
+
+            if (!userData.data) {
+                toast.error(
+                    `Login failed. Error: ${userData.error.data.errors[0].message}`
+                );
+            } else {
+                dispatch(setCredentials({ ...userData }));
+                toast.success(`Login ${userData.data.name} successful`);
+                setInterval(() => {
+                    toggleLoginModal();
+                }, 500);
+            }
         } catch (err) {
             console.log(err);
+            toast.error('Login failed. Please try again.');
         }
     };
 

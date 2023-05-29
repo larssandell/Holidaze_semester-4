@@ -1,33 +1,26 @@
 import {
     Box,
-    Button,
     Card,
     CardContent,
-    CardMedia,
     Container,
     Grid,
     ListItem,
     Rating,
     Typography,
 } from '@mui/material';
-import image from '../../../assets/noimagewhite.webp';
 import WifiIcon from '@mui/icons-material/Wifi';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import FreeBreakfastIcon from '@mui/icons-material/FreeBreakfast';
 import PetsIcon from '@mui/icons-material/Pets';
 import HotelRoundedIcon from '@mui/icons-material/HotelRounded';
-import { useSelector } from 'react-redux';
-import DatePickerTest from '../DatePicker';
 import ImgCarousel from '../../ImgCarousel/index';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useGetSingleVenueQuery } from '../../features/rtkSlices/apiSlice';
 import Loader from '../../Loader';
 import DatePicker from '../DatePicker';
 
 function SingleVenueCard({ id }) {
-    const test = true;
     const [reFetch, setReFetch] = useState(false);
-    // console.log('singleVenue', id);
     const {
         data: venue = [],
         isFetching,
@@ -36,18 +29,7 @@ function SingleVenueCard({ id }) {
     } = useGetSingleVenueQuery(id);
 
     if (isFetching) {
-        return (
-            <Container
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    my: 'auto',
-                    alignItems: 'center',
-                }}
-            >
-                <Loader />
-            </Container>
-        );
+        return <Loader />;
     }
     if (error) {
         return <div>Error</div>;
@@ -62,7 +44,6 @@ function SingleVenueCard({ id }) {
                         xs={12}
                         sx={{
                             justifyContent: 'center',
-                            // maxHeight: '400px',
                         }}
                     >
                         <ImgCarousel images={venue.media} venue={venue} />
@@ -90,7 +71,7 @@ function SingleVenueCard({ id }) {
                                     />
                                 </Typography>
                             </Box>
-                            <div>
+                            <Box>
                                 <Typography
                                     variant='body1'
                                     color='text.secondary'
@@ -98,17 +79,17 @@ function SingleVenueCard({ id }) {
                                 >
                                     {`Location: ${venue.location.city}`}
                                 </Typography>
-                            </div>
-                            <div>
+                            </Box>
+                            <Box>
                                 <Typography
                                     variant='body1'
                                     color='text.secondary'
                                     mt={2}
                                 >
-                                    {`pr night: $ ${venue.price}`}
+                                    {`per night: $ ${venue.price}`}
                                 </Typography>
-                            </div>
-                            <div>
+                            </Box>
+                            <Box>
                                 <Container
                                     sx={{
                                         display: 'flex',
@@ -160,7 +141,7 @@ function SingleVenueCard({ id }) {
                                         )}
                                     </div>
                                 </Container>
-                            </div>
+                            </Box>
                             <Container sx={{ my: '10px' }}>
                                 <DatePicker id={id} venue={venue} />
                             </Container>

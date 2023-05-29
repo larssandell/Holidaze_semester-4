@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
 import { useRegisterUserMutation } from '../features/rtkSlices/apiSlice';
 import { useState } from 'react';
 
@@ -26,7 +25,6 @@ const schema = yup.object({
         .label('Confirm Password')
         .required()
         .oneOf([yup.ref('password'), null], 'Password do not match'),
-    // avatar: yup.string().required('value must be a valid URL.'),
 });
 
 const RegisterModal = () => {

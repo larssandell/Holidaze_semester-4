@@ -5,26 +5,36 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
-import { useCreateVenueMutation } from '../features/rtkSlices/apiSlice';
+import { useEditVenueMutation } from '../features/rtkSlices/apiSlice';
 import { useState } from 'react';
-import { removeEmptyInputsCreateVenue } from '../constants';
+import { removeEmptyInputs } from '../constants';
 
 const schema = yup.object({
-    name: yup.string().required('Must be a title'),
-    description: yup.string().required('Must be at least five characters'),
-    country: yup.string().required('Must contain a Country'),
-
-    media: yup.string().required('URL is required').url('Needs to be An URL'),
+    name: yup.string().optional(),
+    description: yup
+        .string()
+        .optional()
+        .required('Must be at least five characters'),
+    country: yup.string().optional(),
+    media: yup.string().optional().url('Needs to be An URL'),
     media2: yup.string().optional().url('Needs to be An URL'),
     media3: yup.string().optional().url('Needs to be An URL'),
-    maxGuests: yup.number().required('must set max guests'),
-    price: yup.number().required('must set a price'),
+    maxGuests: yup.number().optional(),
+    price: yup.number().optional(),
 });
 
-const CreateVenueModal = ({ refetch, handleClose, venues, bookings, data }) => {
+const UpdateVenue = ({ refetch, handleClose, data, id }) => {
     const [msgOk, setMsgOk] = useState('');
     const [msgErr, setMsgErr] = useState('');
-    const [createVenue] = useCreateVenueMutation();
+    const [updateVenue] = useEditVenueMutation();
+
+    let foundObject = null;
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].id === id) {
+            foundObject = data[i];
+            break;
+        }
+    }
 
     const {
         handleSubmit,
@@ -32,34 +42,38 @@ const CreateVenueModal = ({ refetch, handleClose, venues, bookings, data }) => {
         control,
     } = useForm({
         defaultValues: {
-            name: '',
-            description: '',
-            price: '',
-            maxGuests: '',
-            wifi: false,
-            parking: false,
-            breakfast: false,
-            pets: false,
-            country: '',
-            media: '',
-            media2: '',
-            media3: '',
+            name: foundObject.name,
+            description: foundObject.description,
+            price: foundObject.price,
+            maxGuests: foundObject.maxGuests,
+            wifi: foundObject.meta.wifi ? true : false,
+            parking: foundObject.meta.parking ? true : false,
+            breakfast: foundObject.meta.breakfast ? true : false,
+            pets: foundObject.meta.pets ? true : false,
+            country: foundObject.location.country,
+            media: foundObject.media.length > 0 ? foundObject.media[0] : '',
+            media2: foundObject.media.length > 0 ? foundObject.media[1] : '',
+            media3: foundObject.media.length > 0 ? foundObject.media[2] : '',
         },
         resolver: yupResolver(schema),
     });
-    // console.log(errors);
 
     const onSubmit = async (inputData) => {
-        const updateFormData = removeEmptyInputsCreateVenue(inputData);
+        const updateFormData = removeEmptyInputs(inputData);
+        const contentArray = {
+            id: id,
+            data: { ...updateFormData },
+        };
         try {
-            const createNewVenue = await createVenue(updateFormData);
-            console.log(createNewVenue);
-            if (createNewVenue.data) {
-                toast.success(`'Venue ${createNewVenue.data.name} Created'`);
+            const venueUpdate = await updateVenue(contentArray);
+            if (venueUpdate.data) {
+                toast.success(`'Venue ${venueUpdate.data.name} Updated'`);
                 refetch();
                 handleClose();
             } else {
-                toast.error(`Error ${createNewVenue}`);
+                toast.error(
+                    `error ${venueUpdate.error.data.errors[0].message}`
+                );
             }
         } catch (err) {
             console.log(err);
@@ -85,36 +99,42 @@ const CreateVenueModal = ({ refetch, handleClose, venues, bookings, data }) => {
                 errors={errors}
                 name='name'
                 label='Title'
+                noReq={true}
             />
             <TextFields
                 control={control}
                 errors={errors}
                 name='country'
                 label='Country'
+                noReq={true}
             />
             <TextFields
                 control={control}
                 errors={errors}
                 name='media'
                 label='Media'
+                noReq={true}
             />
             <TextFields
                 control={control}
                 errors={errors}
                 name='media2'
                 label='Media two'
+                // noReq={true}
             />
             <TextFields
                 control={control}
                 errors={errors}
                 name='media3'
                 label='Media three'
+                noReq={true}
             />
             <TextFields
                 control={control}
                 errors={errors}
                 name='description'
                 label='Description'
+                noReq={true}
             />
             <TextFields
                 control={control}
@@ -122,6 +142,7 @@ const CreateVenueModal = ({ refetch, handleClose, venues, bookings, data }) => {
                 name='price'
                 label='Price'
                 type='number'
+                noReq={true}
             />
             <TextFields
                 control={control}
@@ -129,27 +150,28 @@ const CreateVenueModal = ({ refetch, handleClose, venues, bookings, data }) => {
                 name='maxGuests'
                 label='Max Guests'
                 type='number'
+                noReq={true}
             />
             <SwitchFields
-                defaultValues={false}
+                checked={foundObject.meta.wifi ? true : false}
                 control={control}
                 name='wifi'
                 label='Wifi'
             />
             <SwitchFields
-                defaultValues={false}
+                checked={foundObject.meta.parking ? true : false}
                 control={control}
                 name='parking'
                 label='Parking'
             />
             <SwitchFields
-                defaultValues={false}
+                checked={foundObject.meta.breakfast ? true : false}
                 control={control}
                 name='breakfast'
                 label='Breakfast'
             />
             <SwitchFields
-                defaultValues={false}
+                checked={foundObject.meta.pets ? true : false}
                 control={control}
                 name='pets'
                 label='Pets'
@@ -161,10 +183,10 @@ const CreateVenueModal = ({ refetch, handleClose, venues, bookings, data }) => {
                 sx={{ mt: 2, mb: 2 }}
                 variant='outlined'
             >
-                Register
+                Update
             </Button>
         </Box>
     );
 };
 
-export default CreateVenueModal;
+export default UpdateVenue;

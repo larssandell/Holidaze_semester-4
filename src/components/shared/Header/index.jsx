@@ -1,91 +1,52 @@
 import { useState, useEffect, useContext } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
-    AppBar,
     Avatar,
     Box,
     Container,
-    Divider,
     IconButton,
     Drawer,
     MenuItem,
-    styled,
-    Toolbar,
     useMediaQuery,
     useTheme,
     Modal,
     Typography,
     Button,
     BottomNavigation,
-    BottomNavigationAction,
+    Grid,
 } from '@mui/material';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { ChevronRight, MenuRounded } from '@mui/icons-material';
-
 import logo from '../../../assets/logo/holidazelogo.png';
-import useStatus from '../../hooks/useStatus';
 import { styleModal } from '../../modals/modalstyle';
 import RegisterModal from '../../modals/RegisterModal';
 import LoginModal from '../../modals/LoginModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { AuthContext } from '../../utils/Auth/auth';
 import { logOutUser } from '../../features/rtkSlices/dataSlice';
-import ModalComp from '../../modals/ModalComp';
-
-const StyledAppBar = styled(AppBar)({
-    alignItems: 'center',
-    minHeight: '100px',
-});
-
-const StyledToolbar = styled(Toolbar)({
-    display: 'flex',
-    justifyContent: 'space-between',
-    height: '100px',
-    padding: '0',
-});
-
-const StyledDiv = styled('div')({
-    display: 'flex',
-    flexDirection: 'row-reverse',
-});
-
-const pages = [
-    { name: 'Home', url: '/' },
-    { name: 'Venues', url: '/venues' },
-];
-
-const StyledDivider = styled(Divider)({
-    margin: '10px 0',
-});
-// const StyledMenu = styled(Menu)({
-//     backgroundColor: 'blue',
-// });
-const StyledIconButton = styled(IconButton)({
-    backgroundColor: 'transparent',
-    color: '#000',
-    width: '100px',
-    height: '100px',
-    '&:hover': {
-        color: '#blue',
-        backgroundColor: 'transparent',
-    },
-});
-
-// const UserBox = styled(Box)(({ theme }) => ({
-//     display: 'flex',
-//     alignItems: 'center',
-//     gap: '10px',
-//     cursor: 'pointer',
-//     // [theme.breakpoints.up('sm')]: {
-//     //     display: 'none',
-//     // },
-// }));
+import {
+    StyledBottomNavigationAction,
+    StyledIconButton,
+    StyledAppBar,
+    StyledToolbar,
+    StyledDiv,
+    StyledDivider,
+} from '../../MuiStyles';
+import { pages } from '../../constants';
 
 function Header() {
     const [open, setOpen] = useState(false);
-    const { status: regModal, toggleStatus: toggleRegModal } = useStatus(false);
-    const { status: loginModal, toggleStatus: toggleLoginModal } =
-        useStatus(false);
+    const [registerModalOpen, setRegisterModalOpen] = useState(false);
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+    const toggleRegModal = () => {
+        setRegisterModalOpen(!registerModalOpen);
+        setLoginModalOpen(false);
+    };
+
+    const toggleLoginModal = () => {
+        setLoginModalOpen(!loginModalOpen);
+        setRegisterModalOpen(false);
+    };
     const navigate = useNavigate();
 
     const theme = useTheme();
@@ -115,223 +76,37 @@ function Header() {
     };
 
     return (
-        <StyledAppBar position='sticky'>
+        <StyledAppBar position='sticky' sx={{ mb: 4 }}>
             <Container>
-                <StyledToolbar>
-                    <NavLink to='/'>
-                        <Box
-                            component='img'
-                            sx={{
-                                height: 82,
-                                display: { xs: 'block', sm: 'block' },
-                            }}
-                            alt='Logo'
-                            src={logo}
-                        ></Box>
-                    </NavLink>
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: 'none', md: 'flex' },
-                            justifyContent: 'center',
-                        }}
-                    >
-                        {pages.map((page) => (
-                            <MenuItem
-                                key={page.name}
-                                sx={{ my: 2, color: 'black', display: 'block' }}
-                            >
-                                <NavLink to={page.url}>{page.name}</NavLink>
-                            </MenuItem>
-                        ))}
-                    </Box>
-                    <StyledDiv
-                        sx={{
-                            flexGrow: 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <IconButton
-                            aria-label='hamburger icon'
-                            aria-controls='hamburger'
-                            aria-haspopup='true'
-                            onClick={toggleMenuDrawer}
-                            color='inherit'
-                            sx={{
-                                display: { xs: 'flex', md: 'none' },
-                            }}
-                        >
-                            <MenuRounded
-                                fontSize='large'
+                <Grid>
+                    <StyledToolbar disableGutters>
+                        <Grid item>
+                            <NavLink to='/'>
+                                <Box
+                                    component='img'
+                                    sx={{
+                                        height: 82,
+                                        display: { xs: 'block', sm: 'block' },
+                                    }}
+                                    alt='Logo'
+                                    src={logo}
+                                ></Box>
+                            </NavLink>
+                        </Grid>
+                        <Grid item xs={12} md={true}>
+                            <Box
                                 sx={{
-                                    alignItems: 'center',
-                                    backgroundColor: 'transparent',
-                                }}
-                            />
-                        </IconButton>
-
-                        {/* ------Nav menu--------- */}
-                        {isUser ? (
-                            <BottomNavigation
-                                sx={{
-                                    backgroundColor: 'transparent',
+                                    flexGrow: 1,
                                     display: { xs: 'none', md: 'flex' },
+                                    justifyContent: 'center',
                                 }}
                             >
-                                <BottomNavigationAction
-                                    label='Logout'
-                                    onClick={handleLogOut}
-                                    icon={
-                                        <LogoutRoundedIcon
-                                            sx={{
-                                                fontWeight: 'bold',
-                                                backgroundColor: 'transparent',
-                                                color: '#fff',
-                                                height: '30px',
-                                                width: 'auto',
-                                                verticalAlign: 'baseline',
-                                            }}
-                                        />
-                                    }
-                                />
-                                <BottomNavigationAction
-                                    label='User'
-                                    component={NavLink}
-                                    to='/profile'
-                                    icon={
-                                        <Avatar
-                                            src={userProfile.avatar || ''}
-                                            sx={{
-                                                backgroundColor: 'transparent',
-                                                height: 40,
-                                                width: 40,
-                                            }}
-                                        />
-                                    }
-                                />
-                            </BottomNavigation>
-                        ) : (
-                            <BottomNavigation
-                                sx={{
-                                    backgroundColor: 'transparent',
-                                    display: { xs: 'none', md: 'flex' },
-                                }}
-                            >
-                                <BottomNavigationAction
-                                    label='User'
-                                    onClick={toggleLoginModal}
-                                    icon={
-                                        <Avatar
-                                            sx={{
-                                                backgroundColor: 'transparent',
-                                                height: 40,
-                                                width: 40,
-                                                color: '#fff',
-                                            }}
-                                        />
-                                    }
-                                />
-                            </BottomNavigation>
-                        )}
-                        {/* ------Nav Drawer--------- */}
-                        <Drawer
-                            PaperProps={{
-                                sx: {
-                                    width: '50%',
-                                    color: 'black',
-                                },
-                            }}
-                            anchor='right'
-                            open={open}
-                            onClose={toggleMenuDrawer}
-                        >
-                            <Box>
-                                <div onClick={toggleMenuDrawer} role='button'>
-                                    <IconButton>
-                                        <ChevronRight
-                                            sx={{
-                                                fontSize: 40,
-                                            }}
-                                        />
-                                    </IconButton>
-                                </div>
-                                <StyledDivider />
-                                <Box>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            my: 1,
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        {isUser ? (
-                                            <>
-                                                <div onClick={toggleMenuDrawer}>
-                                                    <StyledIconButton
-                                                        onClick={handleLogOut}
-                                                    >
-                                                        <LogoutRoundedIcon
-                                                            sx={{
-                                                                fontWeight:
-                                                                    'bold',
-                                                                backgroundColor:
-                                                                    'transparent',
-                                                                color: '#000',
-                                                                height: 30,
-                                                                width: 30,
-                                                                verticalAlign:
-                                                                    'baseline',
-                                                            }}
-                                                        />
-                                                    </StyledIconButton>
-                                                    <StyledIconButton
-                                                        component={Link}
-                                                        to='/profile'
-                                                    >
-                                                        <Avatar
-                                                            sx={{
-                                                                backgroundColor:
-                                                                    'transparent',
-                                                                height: 40,
-                                                                width: 40,
-                                                                color: '#000',
-                                                            }}
-                                                            src={
-                                                                userProfile.avatar
-                                                            }
-                                                        />
-                                                    </StyledIconButton>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div onClick={toggleMenuDrawer}>
-                                                <StyledIconButton
-                                                    onClick={toggleLoginModal}
-                                                >
-                                                    <Avatar
-                                                        sx={{
-                                                            backgroundColor:
-                                                                'transparent',
-                                                            height: '90px',
-                                                            width: 'auto',
-                                                            color: '#000',
-                                                        }}
-                                                    />
-                                                </StyledIconButton>
-                                            </div>
-                                        )}
-                                    </Box>
-                                </Box>
-                                <StyledDivider />
                                 {pages.map((page) => (
                                     <MenuItem
                                         key={page.name}
-                                        onClick={toggleMenuDrawer}
                                         sx={{
                                             my: 2,
-                                            color: 'white',
+                                            color: 'black',
                                             display: 'block',
                                         }}
                                     >
@@ -341,16 +116,238 @@ function Header() {
                                     </MenuItem>
                                 ))}
                             </Box>
-                        </Drawer>
-                    </StyledDiv>
-                </StyledToolbar>
+                        </Grid>
+                        <Grid item>
+                            <StyledDiv
+                                sx={{
+                                    flexGrow: 1,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <IconButton
+                                    aria-label='hamburger icon'
+                                    aria-controls='hamburger'
+                                    aria-haspopup='true'
+                                    onClick={toggleMenuDrawer}
+                                    color='inherit'
+                                    sx={{
+                                        display: { xs: 'flex', md: 'none' },
+                                    }}
+                                >
+                                    <MenuRounded
+                                        fontSize='large'
+                                        sx={{
+                                            alignItems: 'center',
+                                            backgroundColor: 'transparent',
+                                        }}
+                                    />
+                                </IconButton>
+                                {/* ------Nav menu--------- */}
+                                {isUser ? (
+                                    <BottomNavigation
+                                        sx={{
+                                            backgroundColor: 'transparent',
+                                            display: { xs: 'none', md: 'flex' },
+                                        }}
+                                    >
+                                        <StyledBottomNavigationAction
+                                            label='Logout'
+                                            onClick={handleLogOut}
+                                            icon={
+                                                <LogoutRoundedIcon
+                                                    sx={{
+                                                        fontWeight: 'bold',
+                                                        backgroundColor:
+                                                            'transparent',
+                                                        color: '#000',
+                                                        height: '30px',
+                                                        width: 'auto',
+                                                        verticalAlign:
+                                                            'baseline',
+                                                    }}
+                                                />
+                                            }
+                                        />
+                                        <StyledBottomNavigationAction
+                                            label='User'
+                                            component={NavLink}
+                                            to='/profile'
+                                            icon={
+                                                <Avatar
+                                                    src={
+                                                        userProfile.avatar || ''
+                                                    }
+                                                    sx={{
+                                                        backgroundColor:
+                                                            'transparent',
+                                                        height: 40,
+                                                        width: 40,
+                                                        color: '#000',
+                                                    }}
+                                                />
+                                            }
+                                        />
+                                    </BottomNavigation>
+                                ) : (
+                                    <BottomNavigation
+                                        sx={{
+                                            backgroundColor: 'transparent',
+                                            display: { xs: 'none', md: 'flex' },
+                                        }}
+                                    >
+                                        <StyledBottomNavigationAction
+                                            label='User'
+                                            onClick={toggleLoginModal}
+                                            sx={{ marginLeft: 'auto' }}
+                                            icon={
+                                                <Avatar
+                                                    sx={{
+                                                        backgroundColor:
+                                                            'transparent',
+                                                        height: 40,
+                                                        width: 40,
+                                                        color: '#000',
+                                                    }}
+                                                />
+                                            }
+                                        />
+                                    </BottomNavigation>
+                                )}
+                                {/* ------Nav Drawer--------- */}
+                                <Drawer
+                                    PaperProps={{
+                                        sx: {
+                                            width: '50%',
+                                            color: 'black',
+                                        },
+                                    }}
+                                    anchor='right'
+                                    open={open}
+                                    onClose={toggleMenuDrawer}
+                                >
+                                    <Box>
+                                        <div
+                                            onClick={toggleMenuDrawer}
+                                            role='button'
+                                        >
+                                            <IconButton>
+                                                <ChevronRight
+                                                    sx={{
+                                                        fontSize: 40,
+                                                    }}
+                                                />
+                                            </IconButton>
+                                        </div>
+                                        <StyledDivider />
+                                        <Box>
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    my: 1,
+                                                    justifyContent: 'center',
+                                                }}
+                                            >
+                                                {isUser ? (
+                                                    <>
+                                                        <div
+                                                            onClick={
+                                                                toggleMenuDrawer
+                                                            }
+                                                        >
+                                                            <StyledIconButton
+                                                                onClick={
+                                                                    handleLogOut
+                                                                }
+                                                            >
+                                                                <LogoutRoundedIcon
+                                                                    sx={{
+                                                                        fontWeight:
+                                                                            'bold',
+                                                                        backgroundColor:
+                                                                            'transparent',
+                                                                        color: '#000',
+                                                                        height: 30,
+                                                                        width: 30,
+                                                                        verticalAlign:
+                                                                            'baseline',
+                                                                    }}
+                                                                />
+                                                            </StyledIconButton>
+                                                            <StyledIconButton
+                                                                component={Link}
+                                                                to='/profile'
+                                                            >
+                                                                <Avatar
+                                                                    sx={{
+                                                                        backgroundColor:
+                                                                            'transparent',
+                                                                        height: 40,
+                                                                        width: 40,
+                                                                        color: '#000',
+                                                                    }}
+                                                                    src={
+                                                                        userProfile.avatar
+                                                                    }
+                                                                />
+                                                            </StyledIconButton>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div
+                                                        onClick={
+                                                            toggleMenuDrawer
+                                                        }
+                                                    >
+                                                        <StyledIconButton
+                                                            onClick={
+                                                                toggleLoginModal
+                                                            }
+                                                        >
+                                                            <Avatar
+                                                                sx={{
+                                                                    backgroundColor:
+                                                                        'transparent',
+                                                                    height: '90px',
+                                                                    width: 'auto',
+                                                                    color: '#000',
+                                                                }}
+                                                            />
+                                                        </StyledIconButton>
+                                                    </div>
+                                                )}
+                                            </Box>
+                                        </Box>
+                                        <StyledDivider />
+                                        {pages.map((page) => (
+                                            <MenuItem
+                                                key={page.name}
+                                                onClick={toggleMenuDrawer}
+                                                sx={{
+                                                    my: 2,
+                                                    color: 'white',
+                                                    display: 'block',
+                                                }}
+                                            >
+                                                <NavLink to={page.url}>
+                                                    {page.name}
+                                                </NavLink>
+                                            </MenuItem>
+                                        ))}
+                                    </Box>
+                                </Drawer>
+                            </StyledDiv>
+                        </Grid>
+                    </StyledToolbar>
+                </Grid>
             </Container>
+
             <Modal
                 title='register'
-                open={regModal}
+                open={registerModalOpen}
                 onClose={toggleRegModal}
-                aria-labelledby='modal-modal-title'
-                aria-describedby='modal-modal-description'
+                aria-labelledby='register-modal'
             >
                 <Box sx={styleModal}>
                     <Typography align='center' variant='h4'>
@@ -369,16 +366,15 @@ function Header() {
             </Modal>
             <Modal
                 title='Login'
-                open={loginModal}
+                open={loginModalOpen}
                 onClose={toggleLoginModal}
-                aria-labelledby='modal-modal-title'
-                aria-describedby='modal-modal-description'
+                aria-labelledby='login-modal'
             >
                 <Box sx={styleModal}>
                     <Typography align='center' variant='h4'>
                         Login
                     </Typography>
-                    <LoginModal />
+                    <LoginModal toggleLoginModal={toggleLoginModal} />
                     <Button
                         onClick={toggleRegModal}
                         fullWidth

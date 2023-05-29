@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { holidazeApi } from './apiSlice';
+import { holidazeApi } from '../rtkSlices/apiSlice';
 
 const initialState = {
     apiData: [],
@@ -13,6 +13,11 @@ const initialState = {
     user: false,
     avatar: '',
     apiDataStatus: 'idle',
+    apiDataStatus: {
+        loading: false,
+        lastFetch: null,
+        error: null,
+    },
 };
 
 export const dataSlice = createSlice({
@@ -47,12 +52,12 @@ export const dataSlice = createSlice({
         },
         setVenues: (state, action) => {
             const data = action.payload.data;
-            console.log(data);
+            // console.log(data);
             state.userData = data;
         },
         setRegisterUser: (state, action) => {
             const regUser = action.payload.data.email;
-            console.log(regUser);
+            // console.log(regUser);
         },
         logOutUser: (state, action) => {
             // state
@@ -71,22 +76,49 @@ export const dataSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addMatcher(
-                holidazeApi.endpoints.getAllVenues.matchFulfilled,
-                (state, action) => {
-                    state.apiDataStatus = 'succeeded';
-                    state.apiData = action.payload;
+                holidazeApi.endpoints.getAllVenues.matchPending,
+                (state) => {
+                    state.apiDataStatus.loading = true;
+                    state.apiDataStatus.error = null;
                 }
             )
             .addMatcher(
-                holidazeApi.endpoints.getAllVenues.matchPending,
+                holidazeApi.endpoints.getAllVenues.matchFulfilled,
                 (state, action) => {
-                    state.apiDataStatus = 'Pending';
+                    state.apiData = action.payload;
+                    state.apiDataStatus.loading = false;
+                    state.apiDataStatus.lastFetch = Date.now();
+                    // console.log('added payload getAllVenues', action.payload);
                 }
             )
             .addMatcher(
                 holidazeApi.endpoints.getAllVenues.matchRejected,
                 (state, action) => {
-                    state.apiDataStatus = 'Rejected';
+                    state.apiDataStatus.loading = false;
+                    state.apiDataStatus.error = action.error.message;
+                }
+            )
+            .addMatcher(
+                holidazeApi.endpoints.reFetchAllVenues.matchPending,
+                (state) => {
+                    state.apiDataStatus.loading = true;
+                    state.apiDataStatus.error = null;
+                }
+            )
+            .addMatcher(
+                holidazeApi.endpoints.reFetchAllVenues.matchFulfilled,
+                (state, action) => {
+                    state.apiData = action.payload;
+                    state.apiDataStatus.loading = false;
+                    state.apiDataStatus.lastFetch = Date.now();
+                    // console.log('data fetched', action.payload);
+                }
+            )
+            .addMatcher(
+                holidazeApi.endpoints.reFetchAllVenues.matchRejected,
+                (state, action) => {
+                    state.apiDataStatus.loading = false;
+                    state.apiDataStatus.error = action.error.message;
                 }
             );
     },

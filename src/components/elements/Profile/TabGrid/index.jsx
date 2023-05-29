@@ -3,7 +3,7 @@ import { Grid } from '@mui/material';
 import ProfileCards from '../ProfileCards';
 import noImage from '../../../../assets/noimagewhite.webp';
 
-export const TabGridBookings = ({ items, onDelete, onEdit, type, img }) => {
+export const TabGridBookings = ({ items, type, refetch }) => {
     return (
         <>
             {items.length === 0 ? (
@@ -15,9 +15,14 @@ export const TabGridBookings = ({ items, onDelete, onEdit, type, img }) => {
                             <ProfileCards
                                 id={item.venue.id}
                                 image={item.venue.media[0] || noImage}
-                                onDelete={() => onDelete(item.id)}
-                                onEdit={() => onEdit(item.id)}
                                 title={item.venue.name}
+                                type={type}
+                                bookings='Booking'
+                                refetch={refetch}
+                                bookingId={item.id}
+                                data={items}
+                                dateTo={item.dateTo}
+                                dateFrom={item.dateFrom}
                             />
                         </Grid>
                     ))}
@@ -26,7 +31,7 @@ export const TabGridBookings = ({ items, onDelete, onEdit, type, img }) => {
         </>
     );
 };
-export const TabGridVenues = ({ items, onDelete, onEdit, type }) => {
+export const TabGridVenues = ({ items, type, refetch }) => {
     return (
         <>
             {items.length === 0 ? (
@@ -38,9 +43,11 @@ export const TabGridVenues = ({ items, onDelete, onEdit, type }) => {
                             <ProfileCards
                                 id={item.id}
                                 image={item.media[0] || noImage}
-                                onDelete={() => onDelete(item.id)}
-                                onEdit={() => onEdit(item.id)}
                                 title={item.name}
+                                venues='Venue'
+                                refetch={refetch}
+                                data={items}
+                                created={item.created}
                             />
                         </Grid>
                     ))}

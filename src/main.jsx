@@ -9,7 +9,6 @@ import myTheme from './theme';
 import { ToastContainer } from 'react-toastify';
 import { Provider } from 'react-redux';
 import store from './store';
-import AuthProvider from './components/utils/Auth/auth';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
