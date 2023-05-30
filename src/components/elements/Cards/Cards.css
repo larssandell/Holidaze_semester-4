@@ -1,0 +1,8 @@
+.card_link {
+    opacity: 1;
+}
+.card_link:hover {
+    text-decoration: none;
+    color: #000;
+    opacity: 0.7;
+}

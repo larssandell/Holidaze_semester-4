@@ -1,0 +1,16 @@
+html,
+body {
+    height: 100%;
+    /* width: 100%; */
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background-color: #fffdfa;
+}
+
+.App {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: 100%;
+    grid-template-rows: auto 1fr auto;
+}

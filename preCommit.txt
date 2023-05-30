@@ -1,0 +1,6 @@
+skal legges inn når test er fikset
+
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npm lint && test
