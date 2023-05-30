@@ -13,6 +13,7 @@ import { TabGridBookings, TabGridVenues } from './TabGrid';
 import CreateVenueModal from '../../modals/CreateVenueModal';
 import UpdateProfile from '../../modals/UpdateProfile';
 import DialogComp from '../../modals/DialogComp';
+import useDocumentTitle from '../../constants';
 
 const Profile = () => {
     const [activeTab, SetActiveTab] = useState(0);
@@ -34,6 +35,8 @@ const Profile = () => {
 
     const { data: bookings = [], refetch: refetchBookings } =
         useGetProfileBookingsQuery(user);
+
+    useDocumentTitle(`Holidaze | ${user}`);
 
     if (isLoading) {
         <Loader />;

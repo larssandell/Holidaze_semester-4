@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { useGetSingleVenueQuery } from '../../features/rtkSlices/apiSlice';
 import Loader from '../../Loader';
 import DatePicker from '../DatePicker';
+import useDocumentTitle from '../../constants';
 
 function SingleVenueCard({ id }) {
     const [reFetch, setReFetch] = useState(false);
@@ -27,7 +28,7 @@ function SingleVenueCard({ id }) {
         error,
         refetch,
     } = useGetSingleVenueQuery(id);
-
+    useDocumentTitle(`Holidaze | ${venue.name}`);
     if (isFetching) {
         return <Loader />;
     }

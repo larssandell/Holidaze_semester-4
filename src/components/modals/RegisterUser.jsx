@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useRegisterUserMutation } from '../features/rtkSlices/apiSlice';
+import { useState } from 'react';
 
 const schema = yup.object({
     name: yup
@@ -15,11 +16,7 @@ const schema = yup.object({
         ),
     email: yup
         .string()
-        .matches(
-            /^([a-zA-Z0-9_])+(@noroff.no)/,
-            'must be a valid noroff.no and only symbol accepted _'
-        )
-        .required(),
+        .required('Email must be a valid stud.noroff.no or noroff.no'),
     password: yup
         .string({ minLength: 8 })
         .required('Must be at least 8 characters.'),
@@ -57,6 +54,7 @@ const RegisterModal = ({ toggleLoginModal }) => {
             const userData = await registerUser(rest);
 
             if (userData.error) {
+                console.log('failed', userData);
                 console.log(userData.error.data.errors[0].message);
                 toast.error(
                     `'Error: ${userData.error.data.errors[0].message}'`

@@ -12,10 +12,9 @@ const schema = yup.object({
     email: yup
         .string()
         .matches(
-            /^([a-zA-Z0-9_])+(@stud.noroff.no)/,
-            'must be a valid stud.noroff.no and only symbol accepted _'
+            /^([a-zA-Z0-9_])+(@noroff.no)/,
+            'must be a valid noroff.no and only symbol accepted _'
         )
-
         .required(),
     password: yup
         .string({ minLength: 8 })

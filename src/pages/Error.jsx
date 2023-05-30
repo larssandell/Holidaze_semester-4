@@ -10,7 +10,11 @@ function Error() {
             minHeight='100%'
         >
             <div>
-                <Typography variant='h4' gutterBottom>
+                <Typography
+                    sx={{ textAlign: 'center' }}
+                    variant='h4'
+                    gutterBottom
+                >
                     Error 404
                 </Typography>
                 <Typography variant='body1' gutterBottom>

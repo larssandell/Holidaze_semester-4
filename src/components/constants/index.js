@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 // Local Storage
 export const setLoggedIn = localStorage.setItem('loggedIn', true);
 
@@ -77,3 +79,23 @@ export const pages = [
     { name: 'Home', url: '/' },
     { name: 'Venues', url: '/venues' },
 ];
+/**
+ * useEffect hook to update the document title.
+ * @listens title - The dependency array that triggers the effect whenever the title changes.
+ */
+
+const useDocumentTitle = (title) => {
+    useEffect(() => {
+        document.title = title;
+    }, [title]);
+};
+
+export default useDocumentTitle;
+
+// export function getPaginationOptions(limit, offset) {
+//     const options = {
+//         limit: limit,
+//         offset: offset,
+//     };
+//     return options;
+// }

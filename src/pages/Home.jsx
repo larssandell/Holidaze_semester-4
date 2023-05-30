@@ -4,8 +4,10 @@ import { useDispatch } from 'react-redux';
 import Loader from '../components/Loader';
 import { useGetAllVenuesQuery } from '../components/features/rtkSlices/apiSlice';
 import ShowCaseCards from '../components/elements/ShowCaseCards';
+import useDocumentTitle from '../components/constants';
 
 function useInterval(callback, delay) {
+    useDocumentTitle('Holidaze');
     const savedCallback = useRef();
 
     useEffect(() => {
@@ -39,9 +41,7 @@ function Home() {
 
     useEffect(() => {
         if (!venuesData || isError) {
-            dispatch(getAllVenues()).then(() => {
-                // console.log('Data fetched');
-            });
+            dispatch(getAllVenues());
         }
     }, [dispatch, venuesData, isError]);
 

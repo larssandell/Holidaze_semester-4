@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import dayjs from 'dayjs';
 import { DateRangePicker } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -9,6 +9,9 @@ import {
 import { InputNumber, Slider } from 'antd';
 import isBetween from 'dayjs/plugin/isBetween';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../utils/Auth/auth';
+import { Box, Button, Typography } from '@mui/material';
+
 dayjs.extend(isBetween);
 
 const DatePicker = ({ id, venue }) => {
@@ -22,6 +25,7 @@ const DatePicker = ({ id, venue }) => {
     const [makeBooking] = useMakeBookingMutation();
     const [selectedRange, setSelectedRange] = useState([]);
     const [inputValue, setInputValue] = useState(0);
+    const { isUser, setIsUser } = useContext(AuthContext);
 
     /**
      * Determines if a given date should be disabled. Using DayJS
@@ -85,29 +89,69 @@ const DatePicker = ({ id, venue }) => {
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <DateRangePicker
-                    showOneCalendar
-                    ranges={[]}
-                    shouldDisableDate={shouldDisableDate}
-                    value={selectedRange}
-                    onChange={(value) => setSelectedRange(value)}
-                />
-                <Slider
-                    min={1}
-                    max={venue.maxGuests}
-                    onChange={onChange}
-                    value={typeof inputValue === 'number' ? inputValue : 1}
-                />
-                <InputNumber
-                    min={1}
-                    max={venue.maxGuests}
-                    style={{
-                        margin: '0 16px',
-                    }}
-                    value={inputValue}
-                    onChange={onChange}
-                />
-                <button type='submit'>Submit</button>
+                <Box>
+                    <Box>
+                        <DateRangePicker
+                            showOneCalendar
+                            ranges={[]}
+                            shouldDisableDate={shouldDisableDate}
+                            value={selectedRange}
+                            onChange={(value) => setSelectedRange(value)}
+                        />
+                    </Box>
+                    <Box>
+                        <Slider
+                            min={1}
+                            max={venue.maxGuests}
+                            onChange={onChange}
+                            value={
+                                typeof inputValue === 'number' ? inputValue : 1
+                            }
+                        />
+                        <InputNumber
+                            min={1}
+                            max={venue.maxGuests}
+                            style={{
+                                margin: '0 16px',
+                            }}
+                            value={inputValue}
+                            onChange={onChange}
+                        />
+                    </Box>
+                    <Box
+                        sx={{
+                            mt: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        {isUser ? (
+                            <Button
+                                size='large'
+                                variant='outlined'
+                                type='submit'
+                            >
+                                Submit
+                            </Button>
+                        ) : (
+                            <div>
+                                <Typography>
+                                    Must be logged in to book venue
+                                </Typography>
+
+                                <Button
+                                    disabled
+                                    size='large'
+                                    variant='outlined'
+                                    type='submit'
+                                    fullWidth
+                                >
+                                    Submit
+                                </Button>
+                            </div>
+                        )}
+                    </Box>
+                </Box>
             </form>
         </div>
     );

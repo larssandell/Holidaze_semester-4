@@ -79,6 +79,7 @@ const UpdateVenue = ({ refetch, handleClose, data, id }) => {
             console.log(err);
         }
     };
+
     return (
         <Box
             noValidate

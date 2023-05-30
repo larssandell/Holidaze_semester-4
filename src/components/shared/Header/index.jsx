@@ -33,6 +33,8 @@ import {
     StyledDivider,
 } from '../../MuiStyles';
 import { pages } from '../../constants';
+import DialogComp from '../../modals/DialogComp';
+import { IconMap } from 'antd/es/result';
 
 function Header() {
     const [open, setOpen] = useState(false);
@@ -354,7 +356,7 @@ function Header() {
                         Register
                     </Typography>
 
-                    <RegisterModal />
+                    <RegisterModal toggleLoginModal={toggleLoginModal} />
                     <Button
                         onClick={toggleLoginModal}
                         fullWidth
